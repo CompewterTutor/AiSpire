@@ -14,7 +14,13 @@ AiSpire is an MCP Server and plugin for Vectric Aspire/V-Carve (CAD/CAM Software
   - Python MCP Server: Basic server structure with Lua client implementation
 - Project architecture defined with two main components: Lua Gadget and Python MCP Server
 - Communication protocol between components designed using JSON message format
-- No integration testing performed yet
+- JSON parsing implementation completed for Lua component
+  - Custom JSON encoder/decoder created for Lua
+  - Comprehensive test suite implemented for JSON module
+- Testing frameworks set up for both components
+  - Lua: Busted framework configured with test runner
+  - Python: pytest with asyncio support configured
+- No integration testing performed yet with actual Vectric software
 
 ## Technical Decisions
 - Two-component architecture: Lua Gadget and Python MCP Server
@@ -26,6 +32,8 @@ AiSpire is an MCP Server and plugin for Vectric Aspire/V-Carve (CAD/CAM Software
 - Authentication via shared secret tokens for security
 - Sandbox environment for executing Lua code securely
 - Configuration management via environment variables and config files
+- Custom JSON implementation for Lua to avoid dependencies
+- Test-driven development approach for critical components
 
 ## Research Notes
 - Vectric Aspire/V-Carve Lua SDK offers extensive functionality:
@@ -47,17 +55,16 @@ AiSpire is an MCP Server and plugin for Vectric Aspire/V-Carve (CAD/CAM Software
 
 ## Current Challenges
 - No official documentation for Vectric Lua SDK found yet, relying on SDK stubs
-- Need to implement proper JSON parsing in Lua (currently using placeholder functions)
+- Testing the Lua implementation without Vectric software requires mock SDK
 - Need to implement full MCP protocol support in Python server
-- Testing without Vectric software will require mock SDK implementation
+- Ensuring secure execution of arbitrary Lua code in production environment
 
 ## Next Steps
-1. Complete implementation of Lua Gadget socket server
-2. Add proper JSON parsing to Lua component
-3. Implement Vectric SDK wrapper functions in Lua
-4. Enhance Python MCP Server with full protocol support
-5. Create testing framework for both components
-6. Begin implementing unit tests
+1. Implement Vectric SDK wrapper functions in Lua
+2. Create SDK mock for testing without Vectric software
+3. Enhance Python MCP Server with full protocol support
+4. Add timeout mechanism for long-running Lua code execution
+5. Implement logging with configurable levels
 
 ## Resources
 - SDK stubs from vectric_lua_sdk_stubs.lua
