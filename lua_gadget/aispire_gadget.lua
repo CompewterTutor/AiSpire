@@ -11,6 +11,7 @@
 
 -- Load required libraries
 local socket = require("socket")
+local json = require("json")  -- Load our custom JSON module
 
 -- Configuration
 local CONFIG = {
@@ -29,7 +30,7 @@ local lastError = nil
 
 -- Forward declarations
 local setupServer, acceptConnection, processCommand, executeCode, executeSdkFunction
-local sendResponse, validateCommand, createSandbox, parseJson, toJson
+local sendResponse, validateCommand, createSandbox
 
 -- Initialize the socket server
 function setupServer()
@@ -63,13 +64,13 @@ end
 
 -- Process a command from the client
 function processCommand(commandStr)
-    local success, command = pcall(parseJson, commandStr)
+    local command, err = json.decode(commandStr)
     
-    if not success or not command then
+    if not command then
         return {
             status = "error",
             result = {
-                message = "Invalid JSON command",
+                message = "Invalid JSON command: " .. (err or "unknown error"),
                 data = {},
                 type = "parsing_error"
             }
@@ -195,9 +196,11 @@ end
 function sendResponse(response)
     if not client then return false end
     
-    local responseStr = toJson(response)
+    local responseStr, err = json.encode(response)
     if not responseStr then
-        return false
+        -- If JSON encoding fails, try to send a simple error response
+        responseStr = '{"status":"error","result":{"message":"Failed to encode response: ' .. 
+                     (err or "unknown error") .. '","data":{},"type":"encoding_error"}}'
     end
     
     client:send(responseStr .. "\n")
@@ -256,29 +259,6 @@ function createSandbox()
     -- This would provide access to the Vectric SDK functions in a controlled way
     
     return sandbox
-end
-
--- Parse JSON string to a table
-function parseJson(jsonStr)
-    -- This is a placeholder for JSON parsing
-    -- In a real implementation, use a proper JSON library like dkjson
-    -- For now, just return a simple table for testing
-    return {
-        command_type = "execute_code",
-        payload = { code = jsonStr },
-        id = "test",
-        auth = CONFIG.AUTH_TOKEN
-    }
-end
-
--- Convert a table to a JSON string
-function toJson(table)
-    -- This is a placeholder for JSON generation
-    -- In a real implementation, use a proper JSON library like dkjson
-    return "{\"status\":\"" .. table.status .. "\",\"result\":{\"message\":\"" .. 
-           table.result.message .. "\"},\"command_id\":\"" .. 
-           (table.command_id or "") .. "\",\"execution_time\":" .. 
-           (table.execution_time or 0) .. "}"
 end
 
 -- Main function for the gadget
