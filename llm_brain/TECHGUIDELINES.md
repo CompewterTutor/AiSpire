@@ -1,131 +1,219 @@
-# Technical Guidelines for AiSpire
+# AiSpire Technical Guidelines
 
-## Architecture Overview
+## System Architecture
 
-AiSpire consists of two main components:
-
-1. **Lua Gadget Plugin**: A Lua script that runs within Vectric Aspire/V-Carve and exposes a socket server
-2. **Python MCP Server**: A Model Context Protocol server that connects to the Lua socket server and enables LLM interaction
+### Overview
+AiSpire consists of two primary components:
+1. **Lua Gadget** - A plugin for Vectric Aspire/V-Carve that runs inside the CAD/CAM environment
+2. **Python MCP Server** - A server implementing the Model Context Protocol for LLM integration
 
 ```
-┌─────────────┐         ┌───────────────┐         ┌────────┐
-│ LLM Service │◄───────►│ Python        │◄───────►│ Vectric │
-│             │         │ MCP Server    │         │ Aspire │
-└─────────────┘         └───────────────┘         │ (Lua   │
-                                                  │ Gadget)│
-                                                  └────────┘
+                 ┌─────────────┐            ┌─────────────┐            ┌─────────┐
+                 │             │            │             │            │         │
+                 │    LLMs     │◄─────────► │ Python MCP  │◄─────────► │   Lua   │
+                 │             │   (MCP)    │   Server    │  (Socket)  │ Gadget  │
+                 │             │            │             │            │         │
+                 └─────────────┘            └─────────────┘            └─────────┘
+                                                                           │
+                                                                           │
+                                                                           ▼
+                                                                      ┌─────────────┐
+                                                                      │  Vectric    │
+                                                                      │ Aspire/     │
+                                                                      │  V-Carve    │
+                                                                      └─────────────┘
 ```
 
-## Lua Gadget Component
+### Communication Flow
+1. LLMs send commands to the MCP Server
+2. MCP Server translates commands into Lua code
+3. Lua code is sent to the Lua Gadget via socket connection
+4. Lua Gadget executes the code using the Vectric SDK
+5. Results are sent back through the same channels
 
-### Technical Requirements
+## Lua Gadget Technical Guidelines
 
-- Socket server implementation in Lua
-- Integration with Vectric Aspire/V-Carve Lua SDK
-- Command parsing and execution
-- Status reporting back to the Python MCP server
+### Socket Server
+- Use Lua socket library
+- Create a TCP server listening on a configurable port (default: 9876)
+- Accept connections from localhost only for security
+- Implement basic authentication via shared secret
+- Maintain a persistent connection with the MCP Server
 
-### Features to Implement
+### Command Execution
+- Receive Lua code snippets or command strings
+- Parse commands to identify operation type
+- Execute commands using the Vectric SDK
+- Capture errors and execution results
+- Return structured responses (JSON format)
 
-1. **Socket Server**
-   - Create a TCP socket server on a configurable port
-   - Handle connections from the Python MCP server
-   - Support multiple command formats (JSON, plain text)
-   - Implement basic error handling and recovery
+### SDK Wrapper
+- Create wrapper functions around core Vectric SDK functionality
+- Implement safety checks before executing potentially destructive operations
+- Provide simplified interfaces for common operations
+- Support execution history and operation reversal (undo)
 
-2. **Vectric SDK Interface**
-   - Create wrapper functions for common Vectric SDK operations
-   - Implement sandbox for executing arbitrary Lua code safely
-   - Create helper functions for common operations
+### Safety Measures
+- Validate all incoming commands
+- Implement timeout for long-running operations
+- Add emergency stop functionality
+- Create sandbox for arbitrary Lua code execution
 
-3. **Command Interface**
-   - Parse and validate incoming commands
-   - Execute commands using the Vectric SDK
-   - Return results and status information
-   - Support asynchronous operations where applicable
+### Documentation
+- Document all available commands
+- Include example usage and expected outputs
+- Provide troubleshooting guides for common issues
 
-4. **Error Handling & Logging**
-   - Implement robust error handling
-   - Create detailed logging
-   - Support different verbosity levels
+## Python MCP Server Technical Guidelines
 
-### Additional Lua Features to Consider
+### Socket Client
+- Establish and maintain connection to Lua Gadget
+- Implement auto-reconnect functionality
+- Handle connection timeouts and errors
+- Support secure communication
 
-- Persistent session handling
-- Command history tracking
-- State management for complex operations
-- Undo/redo functionality
-- File system access for importing/exporting files
-- Image processing capabilities
+### MCP Protocol Implementation
+- Follow Model Context Protocol specification
+- Support required message types and extensions
+- Implement proper error handling and response formatting
+- Add custom extensions for CAD/CAM specific operations
 
-## Python MCP Server Component
+### Command Generation
+- Create a command builder for generating valid Lua code
+- Implement templates for common operations
+- Support command chaining and sequences
+- Add validation before sending commands
 
-### Technical Requirements
+### Result Processing
+- Parse JSON responses from Lua Gadget
+- Format results according to MCP specifications
+- Include visual feedback where possible (e.g., image URLs)
+- Support streaming results for long-running operations
 
-- Model Context Protocol (MCP) server implementation
-- Socket client to communicate with the Lua gadget
-- Command generation and result interpretation
-- LLM integration
+### Security
+- Implement authentication and authorization mechanisms
+- Validate LLM requests against allowed operations
+- Log all operations for audit purposes
+- Support user-based access controls
 
-### Features to Implement
+## Communication Protocol
 
-1. **MCP Server**
-   - Implement the MCP protocol specification
-   - Handle requests from LLM clients
-   - Translate LLM requests into Vectric commands
+### Command Format
+```json
+{
+  "command_type": "execute_code | execute_function | query_state",
+  "payload": {
+    "code": "string containing Lua code (for execute_code)",
+    "function": "function name (for execute_function)",
+    "parameters": {}, 
+    "options": {}
+  },
+  "id": "unique command identifier",
+  "auth": "authentication token"
+}
+```
 
-2. **Socket Client**
-   - Connect to the Lua gadget socket server
-   - Send commands and receive responses
-   - Handle connection errors and retries
+### Response Format
+```json
+{
+  "status": "success | error | in_progress",
+  "result": {
+    "data": {},
+    "message": "human readable message",
+    "type": "result type identifier"
+  },
+  "command_id": "original command identifier",
+  "execution_time": "time in ms"
+}
+```
 
-3. **Command Processing**
-   - Convert natural language or structured commands to Lua code
-   - Parse and interpret responses from the Lua gadget
-   - Format responses for the LLM client
+## Supported Operations
 
-4. **LLM Integration**
-   - Implement necessary handlers for LLM communication
-   - Provide context and history to the LLM
-   - Process LLM responses
+Based on the available Vectric SDK, AiSpire will support the following operations:
 
-### Additional Python Features to Consider
+### Job Management
+- Create, open, save, and export jobs
+- Modify job properties
+- Manage material settings
 
-- Command templating system
-- User authentication and permissions
-- Web UI for monitoring and direct interaction
-- Result visualization
-- Project management
-- Version control integration
+### Vector Operations
+- Create and modify geometric primitives (lines, arcs, circles)
+- Draw complex paths and contours
+- Import/export vector data
+- Transform vectors (scale, rotate, translate)
 
-## Data Flow
+### Layer Management
+- Create and modify layers
+- Change layer visibility and properties
+- Move objects between layers
 
-1. LLM client sends request to Python MCP server
-2. MCP server processes request and generates Vectric commands
-3. Commands are sent to Lua gadget via socket connection
-4. Lua gadget executes commands using Vectric SDK
-5. Results are sent back to MCP server
-6. MCP server formats results for LLM client
-7. Results are returned to LLM client
+### Toolpath Operations
+- Create and calculate toolpaths
+- Set toolpath parameters
+- Preview and simulate toolpaths
+- Export toolpath files
 
-## Security Considerations
+### 3D Modeling
+- Import 3D models
+- Create basic 3D shapes
+- Modify 3D model properties
 
-- Validate all input from LLM clients
-- Limit Lua execution capabilities to prevent harmful operations
-- Implement authentication for the socket connection
-- Consider encryption for sensitive data
-- Rate limiting to prevent abuse
+### UI Operations
+- Create custom dialogs
+- Display messages to users
+- Get user input and selections
 
-## Testing Strategy
+## Development Guidelines
 
-- Unit tests for both Python and Lua components
-- Integration tests for the full system
-- Mock Vectric SDK for testing without the actual software
-- Scenario-based testing for common use cases
+### Lua Component
+- Follow Lua programming best practices
+- Thoroughly test SDK function wrappers
+- Document all functions with proper JSDoc-style comments
+- Handle errors gracefully and provide meaningful error messages
+- Implement logging with configurable verbosity
 
-## Performance Considerations
+### Python Component
+- Use Python 3.8+ 
+- Follow PEP 8 style guidelines
+- Use type hints for all functions
+- Implement comprehensive unit tests
+- Document API with standard docstrings
+- Use asynchronous programming where appropriate
 
-- Optimize socket communication
-- Batch commands when possible
-- Consider caching frequently used operations
-- Monitor and log performance metrics
+### Error Handling
+- Implement proper error trapping in both components
+- Return structured error messages
+- Include error codes and suggested fixes
+- Log errors with appropriate detail for troubleshooting
+
+### Testing
+- Create unit tests for both Lua and Python components
+- Implement integration tests for the complete system
+- Create a mock Vectric SDK for testing without the actual software
+- Test with real Vectric software for final validation
+
+### Performance
+- Optimize for low latency in command execution
+- Implement request queuing for concurrent operations
+- Support command batching for efficiency
+- Monitor resource usage and implement limits
+
+## Deployment
+
+### Lua Gadget Installation
+- Package as a standard Vectric Gadget (.lua file)
+- Include installation instructions
+- Support multiple Vectric software versions
+
+### Python Server Deployment
+- Package as a standard Python package
+- Support installation via pip
+- Include Docker deployment option
+- Document required dependencies and environment setup
+
+## Future Considerations
+- Web UI for direct interactions
+- Support for additional CAD/CAM software
+- Plugin system for extending functionality
+- Integration with version control systems for designs
+- Collaborative design features

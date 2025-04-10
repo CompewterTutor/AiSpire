@@ -2,61 +2,201 @@
 
 ## Setup and Infrastructure
 - [ ] Set up project directory structure
+  - [ ] Create folders for Lua Gadget (`lua_gadget/`)
+  - [ ] Create folders for Python MCP Server (`python_mcp_server/`)
+  - [ ] Create folders for tests (`tests/`)
+  - [ ] Create folders for documentation (`docs/`)
 - [ ] Create initial README.md with project overview
 - [ ] Set up version control and .gitignore file
 - [ ] Define coding standards and documentation requirements
 - [ ] Set up testing framework for both Lua and Python components
+  - [ ] Set up Busted or LuaUnit for Lua testing
+  - [ ] Set up pytest for Python testing
 
 ## Lua Gadget Development
 - [ ] Research Vectric Aspire/V-Carve SDK documentation
 - [ ] Set up Lua development environment
+  - [ ] Install Lua 5.3+ (compatible with Vectric)
+  - [ ] Install LuaSocket library
+  - [ ] Configure IDE with Lua support
 - [ ] Implement basic socket server in Lua
+  - [ ] Set up TCP server on configurable port
+  - [ ] Implement connection handling and timeouts
+  - [ ] Add authentication mechanism
 - [ ] Create initial Vectric SDK wrapper functions
+  - [ ] Job management functions (create, open, save, export)
+  - [ ] Vector creation and manipulation functions
+  - [ ] Toolpath creation and calculation functions
+  - [ ] Layer management functions
 - [ ] Implement command parsing and execution
+  - [ ] Create command parser for JSON messages
+  - [ ] Build command executor with error handling
+  - [ ] Implement response formatter
 - [ ] Add support for executing arbitrary Lua code
+  - [ ] Create sandbox environment for code execution
+  - [ ] Implement security checks and validation
+  - [ ] Add timeout mechanism for long-running code
 - [ ] Implement error handling and logging
+  - [ ] Create robust error trapping system
+  - [ ] Set up logging with configurable levels
+  - [ ] Implement error reporting in standardized format
 - [ ] Create helper functions for common operations:
-  - [ ] Path creation
-  - [ ] 3D model import
+  - [ ] Path creation and manipulation
+    - [ ] Circle, rectangle, and polygon functions
+    - [ ] Path combining and Boolean operations
+    - [ ] Path offsetting and scaling
+  - [ ] 3D model import and manipulation
+    - [ ] Model import from various formats
+    - [ ] Model transformation functions
+    - [ ] Model positioning and alignment
   - [ ] Vector drawing
+    - [ ] Line, arc, and curve drawing
+    - [ ] Text creation and styling
+    - [ ] Dimension and measurement tools
   - [ ] Vector nesting
+    - [ ] Efficient placement algorithms
+    - [ ] Rotation and optimization
+    - [ ] Material utilization reporting
   - [ ] Toolpath creation
+    - [ ] Profile toolpaths
+    - [ ] Pocket toolpaths
+    - [ ] Drilling operations
+    - [ ] 3D roughing and finishing toolpaths
 - [ ] Add configuration options (port, verbosity, etc.)
+  - [ ] Create config file support
+  - [ ] Add runtime configuration changes
+  - [ ] Implement configuration validation
 - [ ] Create documentation for Lua component
+  - [ ] Document all public functions and their parameters
+  - [ ] Create examples for common operations
+  - [ ] Add troubleshooting section
 
 ## Python MCP Server Development
 - [ ] Set up Python development environment
+  - [ ] Set up Python 3.8+
+  - [ ] Create virtual environment
+  - [ ] Set up dependency management (requirements.txt, pyproject.toml)
 - [ ] Install necessary libraries for MCP server implementation
+  - [ ] Socket communication libraries
+  - [ ] MCP protocol libraries
+  - [ ] JSON parsing libraries
+  - [ ] Logging and monitoring libraries
 - [ ] Create basic MCP server structure
+  - [ ] Implement server startup and configuration
+  - [ ] Create routing for different endpoints
+  - [ ] Set up authentication and authorization
 - [ ] Implement socket client to connect to Lua gadget
+  - [ ] Create connection manager
+  - [ ] Implement auto-reconnect functionality
+  - [ ] Add timeout and error handling
 - [ ] Create command generation system
+  - [ ] Build Lua code generation templates
+  - [ ] Implement command validation
+  - [ ] Create command queueing system
 - [ ] Implement result parsing and formatting
+  - [ ] Parse JSON responses from Lua gadget
+  - [ ] Format results according to MCP protocol
+  - [ ] Handle different result types (success, error, etc.)
 - [ ] Add LLM integration
+  - [ ] Implement MCP protocol handlers
+  - [ ] Create message parsers for LLM requests
+  - [ ] Set up response formatting for LLMs
 - [ ] Create command templates for common operations
+  - [ ] Job management templates
+  - [ ] Vector creation templates
+  - [ ] Toolpath generation templates
+  - [ ] Layer management templates
 - [ ] Implement error handling and recovery
+  - [ ] Create robust error trapping
+  - [ ] Implement retry mechanism for failed commands
+  - [ ] Add detailed error reporting
 - [ ] Add logging and monitoring
+  - [ ] Set up structured logging
+  - [ ] Implement performance metrics
+  - [ ] Create alerts for critical issues
 - [ ] Create documentation for Python component
+  - [ ] API documentation
+  - [ ] Deployment instructions
+  - [ ] Configuration guide
 
 ## Integration and Testing
 - [ ] Create end-to-end tests
+  - [ ] Test socket communication between components
+  - [ ] Test command execution flow
+  - [ ] Test error handling and recovery
 - [ ] Test with mock Vectric SDK
+  - [ ] Create mock implementation of Vectric SDK
+  - [ ] Test all wrapper functions
+  - [ ] Validate command execution
 - [ ] Test with actual Vectric software
+  - [ ] Install Vectric Aspire/V-Carve
+  - [ ] Configure test environment
+  - [ ] Validate real-world operation
 - [ ] Create sample commands and workflows
+  - [ ] Basic vector creation workflow
+  - [ ] Toolpath generation workflow
+  - [ ] Complex design workflow
 - [ ] Perform performance testing
+  - [ ] Test command execution latency
+  - [ ] Test concurrent command handling
+  - [ ] Identify and resolve bottlenecks
 - [ ] Address security concerns
+  - [ ] Perform security audit
+  - [ ] Test authentication mechanisms
+  - [ ] Validate input sanitization
 
 ## Documentation
 - [ ] Create user documentation
+  - [ ] Installation guide
+  - [ ] Configuration guide
+  - [ ] Command reference
 - [ ] Create developer documentation
+  - [ ] Architecture overview
+  - [ ] Component interaction diagrams
+  - [ ] Code organization and structure
 - [ ] Document API endpoints
+  - [ ] MCP server endpoints
+  - [ ] Command structure and parameters
+  - [ ] Response formats and status codes
 - [ ] Create examples and tutorials
+  - [ ] Basic operation examples
+  - [ ] Advanced workflow tutorials
+  - [ ] Troubleshooting scenarios
 - [ ] Document configuration options
+  - [ ] Lua gadget configuration
+  - [ ] MCP server configuration
+  - [ ] Security settings
 - [ ] Create troubleshooting guide
+  - [ ] Common issues and solutions
+  - [ ] Diagnostic procedures
+  - [ ] Support contact information
 
 ## Future Enhancements
 - [ ] Web UI for direct interaction
+  - [ ] Real-time visualization of operations
+  - [ ] Command builder interface
+  - [ ] Job management dashboard
 - [ ] Command history and session management
+  - [ ] Save and replay command sequences
+  - [ ] Persistent sessions across restarts
+  - [ ] Command versioning
 - [ ] User authentication and permissions
+  - [ ] Multi-user support
+  - [ ] Role-based access control
+  - [ ] Authentication integrations (OAuth, SAML)
 - [ ] Enhanced visualization of results
+  - [ ] 3D preview of models and toolpaths
+  - [ ] Interactive result manipulation
+  - [ ] Simulation of machining operations
 - [ ] Support for additional CAD/CAM operations
+  - [ ] Advanced toolpath strategies
+  - [ ] Multi-axis machining support
+  - [ ] Sheet nesting optimization
 - [ ] Plugin system for extending functionality
+  - [ ] Plugin architecture design
+  - [ ] Plugin marketplace or repository
+  - [ ] Plugin management interface
+- [ ] Version control integration for designs
+  - [ ] Track changes to designs
+  - [ ] Branch and merge support
+  - [ ] Collaboration features
