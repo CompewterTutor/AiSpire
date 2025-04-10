@@ -1,0 +1,23 @@
+# AiSpire Test Dependencies
+# Version 0.1.0 (Development)
+
+# Include all base requirements
+-r python_mcp_server/requirements.txt
+
+# Testing frameworks
+pytest>=7.0.0              # Python testing framework
+pytest-asyncio>=0.18.0     # Asyncio support for pytest
+pytest-cov>=3.0.0          # Code coverage plugin for pytest
+pytest-mock>=3.7.0         # Mock support for pytest
+
+# Testing tools
+coverage>=6.3.0            # Code coverage measurement
+mock>=4.0.0                # Mocking library for tests
+
+# Development & debugging
+ipython>=8.0.0             # Enhanced interactive Python shell for debugging
+debugpy>=1.6.0             # Debug adapter for Visual Studio Code
+
+# Mock servers
+aioresponses>=0.7.0        # Mocking aiohttp responses
+responses>=0.20.0          # Mocking requests

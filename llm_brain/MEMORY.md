@@ -70,6 +70,14 @@ AiSpire is an MCP Server and plugin for Vectric Aspire/V-Carve (CAD/CAM Software
   - Error categorization system to classify different errors
   - Response processing to standardize all outputs
   - Comprehensive testing for all response types and formats
+- End-to-End testing framework implemented:
+  - Mock Lua socket server that simulates the Lua Gadget
+  - Mock Vectric SDK for testing without the actual software
+  - Tests for socket communication between components
+  - Tests for command execution flow
+  - Tests for error handling and recovery
+  - Test runner for running all end-to-end tests
+  - Documentation for running tests
 - No integration testing performed yet with actual Vectric software
 
 ## Technical Decisions
@@ -102,6 +110,11 @@ AiSpire is an MCP Server and plugin for Vectric Aspire/V-Carve (CAD/CAM Software
   - Progress tracking for in-progress operations
   - Detailed error reporting with context information
   - Response transformation between Lua and MCP protocols
+- End-to-end testing approach:
+  - Mock components for testing without actual Vectric software
+  - Comprehensive test coverage for communication flow
+  - Modular test organization for different aspects of functionality
+  - Automated test runner for continuous integration
 
 ## Research Notes
 - Vectric Aspire/V-Carve Lua SDK offers extensive functionality:
