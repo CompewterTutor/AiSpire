@@ -96,7 +96,7 @@
 - [x] Implement result parsing and formatting
   - [x] Parse JSON responses from Lua gadget
   - [x] Format results according to MCP protocol
-  - [ ] Handle different result types (success, error, etc.)
+  - [x] Handle different result types (success, error, etc.)
 - [ ] Add LLM integration
   - [ ] Implement MCP protocol handlers
   - [ ] Create message parsers for LLM requests
