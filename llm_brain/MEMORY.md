@@ -27,6 +27,25 @@ AiSpire is an MCP Server and plugin for Vectric Aspire/V-Carve (CAD/CAM Software
   - Vector drawing (lines, arcs, curves, polylines)
   - Text creation and styling
   - Dimension and measurement tools
+  - Toolpath creation (profile, pocket, drilling, 3D roughing and finishing)
+  - 3D model import and manipulation
+    - Model import from various file formats
+    - Basic shape generation (cube, cylinder, sphere)
+    - Model transformation (scale, rotate, position)
+    - Model positioning with alignment options
+    - Model combination with boolean operations
+    - Model export to various formats
+  - Vector nesting capabilities
+    - Multiple nesting algorithms (bottom-left packing, genetic algorithm)
+    - Support for rotation optimization
+    - Material utilization reporting
+    - Configurable spacing and material dimensions
+- Advanced features implemented:
+  - Timeout mechanism for long-running Lua code execution
+  - Logging system with configurable verbosity levels
+  - Configuration management via config files
+  - Runtime configuration changes support
+  - Configuration validation
 - No integration testing performed yet with actual Vectric software
 
 ## Technical Decisions
@@ -39,10 +58,15 @@ AiSpire is an MCP Server and plugin for Vectric Aspire/V-Carve (CAD/CAM Software
 - Authentication via shared secret tokens for security
 - Sandbox environment for executing Lua code securely
 - Configuration management via environment variables and config files
+  - Support for JSON and YAML configuration formats
+  - Hot-reloading of configuration changes
+  - Validation of configuration parameters
 - Custom JSON implementation for Lua to avoid dependencies
 - Test-driven development approach for critical components
 - Modular helper function design for reusability and maintainability
 - Comprehensive test coverage for helper functions using mock objects
+- Timeout management for long-running operations with graceful termination
+- Multi-level logging system with configurable output destinations
 
 ## Research Notes
 - Vectric Aspire/V-Carve Lua SDK offers extensive functionality:
@@ -61,6 +85,11 @@ AiSpire is an MCP Server and plugin for Vectric Aspire/V-Carve (CAD/CAM Software
   - Text: For text creation and styling
   - Group: For organizing multiple objects
   - Transformation2D: For transforming objects
+- Toolpath creation capabilities identified in SDK:
+  - Profile toolpaths for cutting along paths
+  - Pocket toolpaths for clearing material
+  - Drilling operations for hole creation
+  - 3D roughing and finishing toolpaths for 3D models
 
 ## Development Environment
 - Need to set up:
@@ -74,14 +103,14 @@ AiSpire is an MCP Server and plugin for Vectric Aspire/V-Carve (CAD/CAM Software
 - Need to implement full MCP protocol support in Python server
 - Ensuring secure execution of arbitrary Lua code in production environment
 - Creating realistic mock objects for testing helper functions
+- Implementing efficient vector nesting algorithms (COMPLETED)
 
 ## Next Steps
-1. Implement 3D model import and manipulation helpers
-2. Create toolpath creation helper functions
-3. Implement vector nesting capabilities
-4. Add timeout mechanism for long-running Lua code execution
-5. Implement logging with configurable levels
-6. Create config file support for both components
+1. Create comprehensive documentation for Lua component
+2. Implement full MCP protocol support in Python server
+3. Create realistic mock objects for testing
+4. Add LLM integration for the MCP server
+5. Create command templates for common operations
 
 ## Resources
 - SDK stubs from vectric_lua_sdk_stubs.lua

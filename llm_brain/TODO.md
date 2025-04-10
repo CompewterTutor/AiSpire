@@ -35,37 +35,37 @@
 - [x] Add support for executing arbitrary Lua code
   - [x] Create sandbox environment for code execution
   - [x] Implement security checks and validation
-  - [ ] Add timeout mechanism for long-running code
+  - [x] Add timeout mechanism for long-running code
 - [x] Implement error handling and logging
   - [x] Create robust error trapping system
-  - [ ] Set up logging with configurable levels
+  - [x] Set up logging with configurable levels
   - [x] Implement error reporting in standardized format
 - [ ] Create helper functions for common operations:
   - [x] Path creation and manipulation
     - [x] Circle, rectangle, and polygon functions
     - [x] Path combining and Boolean operations
     - [x] Path offsetting and scaling
-  - [ ] 3D model import and manipulation
-    - [ ] Model import from various formats
-    - [ ] Model transformation functions
-    - [ ] Model positioning and alignment
+  - [x] 3D model import and manipulation
+    - [x] Model import from various formats
+    - [x] Model transformation functions
+    - [x] Model positioning and alignment
   - [x] Vector drawing
     - [x] Line, arc, and curve drawing
     - [x] Text creation and styling
     - [x] Dimension and measurement tools
-  - [ ] Vector nesting
-    - [ ] Efficient placement algorithms
-    - [ ] Rotation and optimization
-    - [ ] Material utilization reporting
-  - [ ] Toolpath creation
-    - [ ] Profile toolpaths
-    - [ ] Pocket toolpaths
-    - [ ] Drilling operations
-    - [ ] 3D roughing and finishing toolpaths
+  - [x] Vector nesting
+    - [x] Efficient placement algorithms
+    - [x] Rotation and optimization
+    - [x] Material utilization reporting
+  - [x] Toolpath creation
+    - [x] Profile toolpaths
+    - [x] Pocket toolpaths
+    - [x] Drilling operations
+    - [x] 3D roughing and finishing toolpaths
 - [x] Add configuration options (port, verbosity, etc.)
-  - [ ] Create config file support
-  - [ ] Add runtime configuration changes
-  - [ ] Implement configuration validation
+  - [x] Create config file support
+  - [x] Add runtime configuration changes
+  - [x] Implement configuration validation
 - [ ] Create documentation for Lua component
   - [ ] Document all public functions and their parameters
   - [ ] Create examples for common operations
