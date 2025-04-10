@@ -52,6 +52,13 @@ AiSpire is an MCP Server and plugin for Vectric Aspire/V-Carve (CAD/CAM Software
   - Complete workflow examples for common CAD/CAM operations
   - Troubleshooting guide with common issues and solutions
   - Code examples for reference
+- Command generation system for Python MCP Server implemented:
+  - Lua code generation templates for common operations
+  - Command validation system with security checks
+  - Command queueing system with priority support
+  - Template engine for generating Lua code
+  - Command status tracking and result handling
+  - Tests for command generator and queue components
 - No integration testing performed yet with actual Vectric software
 
 ## Technical Decisions
@@ -73,6 +80,11 @@ AiSpire is an MCP Server and plugin for Vectric Aspire/V-Carve (CAD/CAM Software
 - Comprehensive test coverage for helper functions using mock objects
 - Timeout management for long-running operations with graceful termination
 - Multi-level logging system with configurable output destinations
+- Command generation using template-based approach:
+  - Pre-defined templates for common operations
+  - Support for custom templates
+  - Security validation before execution
+  - Priority-based command queueing
 
 ## Research Notes
 - Vectric Aspire/V-Carve Lua SDK offers extensive functionality:
@@ -109,14 +121,13 @@ AiSpire is an MCP Server and plugin for Vectric Aspire/V-Carve (CAD/CAM Software
 - Need to implement full MCP protocol support in Python server
 - Ensuring secure execution of arbitrary Lua code in production environment
 - Creating realistic mock objects for testing helper functions
-- Implementing efficient vector nesting algorithms (COMPLETED)
 
 ## Next Steps
-1. Implement full MCP protocol support in Python server
-2. Create realistic mock objects for testing
-3. Add LLM integration for the MCP server
-4. Create command templates for common operations
-5. Create documentation for Python component
+1. Add LLM integration for the MCP server
+2. Create command templates for common operations
+3. Handle different result types in result parsing
+4. Create documentation for Python component
+5. Test with mock Vectric SDK
 
 ## Resources
 - SDK stubs from vectric_lua_sdk_stubs.lua
