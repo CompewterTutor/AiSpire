@@ -41,18 +41,18 @@
   - [ ] Set up logging with configurable levels
   - [x] Implement error reporting in standardized format
 - [ ] Create helper functions for common operations:
-  - [ ] Path creation and manipulation
-    - [ ] Circle, rectangle, and polygon functions
-    - [ ] Path combining and Boolean operations
-    - [ ] Path offsetting and scaling
+  - [x] Path creation and manipulation
+    - [x] Circle, rectangle, and polygon functions
+    - [x] Path combining and Boolean operations
+    - [x] Path offsetting and scaling
   - [ ] 3D model import and manipulation
     - [ ] Model import from various formats
     - [ ] Model transformation functions
     - [ ] Model positioning and alignment
-  - [ ] Vector drawing
-    - [ ] Line, arc, and curve drawing
-    - [ ] Text creation and styling
-    - [ ] Dimension and measurement tools
+  - [x] Vector drawing
+    - [x] Line, arc, and curve drawing
+    - [x] Text creation and styling
+    - [x] Dimension and measurement tools
   - [ ] Vector nesting
     - [ ] Efficient placement algorithms
     - [ ] Rotation and optimization

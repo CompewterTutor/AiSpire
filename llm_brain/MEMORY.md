@@ -20,6 +20,13 @@ AiSpire is an MCP Server and plugin for Vectric Aspire/V-Carve (CAD/CAM Software
 - Testing frameworks set up for both components
   - Lua: Busted framework configured with test runner
   - Python: pytest with asyncio support configured
+- Helper functions for common operations implemented:
+  - Path creation and manipulation (circles, rectangles, polygons)
+  - Path combining using boolean operations
+  - Path offsetting and scaling
+  - Vector drawing (lines, arcs, curves, polylines)
+  - Text creation and styling
+  - Dimension and measurement tools
 - No integration testing performed yet with actual Vectric software
 
 ## Technical Decisions
@@ -34,6 +41,8 @@ AiSpire is an MCP Server and plugin for Vectric Aspire/V-Carve (CAD/CAM Software
 - Configuration management via environment variables and config files
 - Custom JSON implementation for Lua to avoid dependencies
 - Test-driven development approach for critical components
+- Modular helper function design for reusability and maintainability
+- Comprehensive test coverage for helper functions using mock objects
 
 ## Research Notes
 - Vectric Aspire/V-Carve Lua SDK offers extensive functionality:
@@ -46,6 +55,12 @@ AiSpire is an MCP Server and plugin for Vectric Aspire/V-Carve (CAD/CAM Software
 - Lua socket implementation using LuaSocket library
 - MCP protocol implementation in Python
 - Detailed SDK stubs from vectric_lua_sdk_stubs.lua available for reference
+- SDK objects for vector manipulation identified:
+  - Contour: For path creation and manipulation
+  - Circle, Polyline, BezierCurve: For specific vector types
+  - Text: For text creation and styling
+  - Group: For organizing multiple objects
+  - Transformation2D: For transforming objects
 
 ## Development Environment
 - Need to set up:
@@ -58,13 +73,15 @@ AiSpire is an MCP Server and plugin for Vectric Aspire/V-Carve (CAD/CAM Software
 - Testing the Lua implementation without Vectric software requires mock SDK
 - Need to implement full MCP protocol support in Python server
 - Ensuring secure execution of arbitrary Lua code in production environment
+- Creating realistic mock objects for testing helper functions
 
 ## Next Steps
-1. Implement Vectric SDK wrapper functions in Lua
-2. Create SDK mock for testing without Vectric software
-3. Enhance Python MCP Server with full protocol support
+1. Implement 3D model import and manipulation helpers
+2. Create toolpath creation helper functions
+3. Implement vector nesting capabilities
 4. Add timeout mechanism for long-running Lua code execution
 5. Implement logging with configurable levels
+6. Create config file support for both components
 
 ## Resources
 - SDK stubs from vectric_lua_sdk_stubs.lua
@@ -77,3 +94,6 @@ AiSpire is an MCP Server and plugin for Vectric Aspire/V-Carve (CAD/CAM Software
 - Design should allow for future web UI integration
 - Consider security implications of executing arbitrary Lua code
 - Plan for testing without requiring actual Vectric software installation
+- Create a comprehensive library of example operations for common CAD/CAM tasks
+- Consider implementing a higher-level DSL for defining complex operations
+- Investigate possible integration with other CAD/CAM formats and standards
