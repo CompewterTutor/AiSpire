@@ -1,2 +1,84 @@
-llm_brain/.env
+# General
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+
+# Thumbnails
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+
+# Folder config file
+Desktop.ini
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
 .env
+.venv
+venv/
+ENV/
+env.bak/
+venv.bak/
+.pytest_cache/
+
+# Lua
+*.o
+*.os
+*.so
+*.obj
+*.a
+*.dll
+*.dylib
+*.dSYM
+*.sl
+*.lib
+*.exe
+luac.out
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pip-log.txt
+pip-delete-this-directory.txt
+
+# IDE specific files
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.project
+.settings/
+.classpath
+
+# Project specific
+config.local.json
+*.pem
+*.key
