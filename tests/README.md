@@ -42,6 +42,40 @@ To run the end-to-end tests:
    - Run all the end-to-end tests
    - Stop both servers when tests are complete
 
+### Troubleshooting End-to-End Tests
+
+If you encounter errors running the end-to-end tests, try the following steps:
+
+1. Run the troubleshooting script to diagnose common issues:
+   ```bash
+   python tests/end_to_end/troubleshoot.py
+   ```
+
+2. Ensure the project root is in your Python path:
+   ```bash
+   # On Linux/macOS
+   export PYTHONPATH=/Users/hippo/git_repos/personal/AiSpire:$PYTHONPATH
+   
+   # On Windows
+   set PYTHONPATH=C:\path\to\AiSpire;%PYTHONPATH%
+   ```
+
+3. Check for port conflicts:
+   - The mock Lua server uses port 9876
+   - The MCP server uses port 8765
+   - Make sure these ports are not in use by other applications
+
+4. Common errors and solutions:
+   - `ModuleNotFoundError`: Make sure the project root is in your Python path
+   - `ConnectionRefusedError`: Check if servers are starting correctly
+   - `PermissionError`: Check file permissions
+   - `Address already in use`: Another process is using the required ports
+
+5. For more detailed debugging, run the test runner with increased verbosity:
+   ```bash
+   python tests/end_to_end/test_runner.py -v
+   ```
+
 ### End-to-End Test Categories
 
 The end-to-end tests cover three main areas:
