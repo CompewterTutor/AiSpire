@@ -46,6 +46,13 @@ AiSpire consists of two primary components:
 - Draw vector shapes and text
 - Optimize vector nesting for material utilization
 - Generate and calculate toolpaths for CNC machining
+- Utilize advanced Vectric SDK capabilities:
+  - Matrix transformations for precise object manipulation
+  - Specialized job types (two-sided, rotary)
+  - Advanced toolpath strategies (V-carving, fluting, prism carving)
+  - Tool database integration
+  - Custom UI elements (HTML dialogs, progress bars)
+  - External toolpath generation and import/export
 
 ## Project Status
 
@@ -57,6 +64,7 @@ AiSpire is currently in the early development phase. The architecture and techni
 - `python_mcp_server/` - Python implementation of MCP server
 - `tests/` - Test files for both components
 - `docs/` - Project documentation
+  - `vectric_sdk/` - Contains detailed Vectric SDK reference documentation
 - `llm_brain/` - AI development guidelines and project memory
 
 ## Getting Started
@@ -69,6 +77,30 @@ AiSpire is currently in the early development phase. The architecture and techni
 - Lua 5.3+ with LuaSocket library
 - Python 3.8+ with required packages (see requirements.txt once available)
 - Access to an LLM supporting the Model Context Protocol
+
+## SDK Reference
+
+The project includes a comprehensive Vectric SDK reference (located in `docs/vectric_sdk/Vectric.lua`) that documents the available functions for interacting with Vectric Aspire/V-Carve. This reference covers:
+
+- Job creation and management
+- Vector and geometry operations
+- Toolpath generation with various strategies
+- Tool database access
+- User interface elements
+- 3D component manipulation (Aspire only)
+- System information and registry access
+
+## Planned Enhancements
+
+Based on the detailed SDK reference, we plan to implement:
+
+1. **Advanced Geometric Operations**: Matrix-based transformations, complex path creation, and polar coordinate functions
+2. **Specialized Job Management**: Support for two-sided and rotary jobs
+3. **Comprehensive Toolpath Strategies**: Profile, pocket, V-carving, fluting, prism carving, 3D roughing and finishing
+4. **Tool Database Integration**: Access system tool database, create custom tools
+5. **UI Integration**: Custom dialogs, progress bars, file selection interfaces
+6. **System Integration**: Application detection, file location access, registry settings
+7. **External Toolpath Support**: Generate, import, and export custom toolpaths
 
 ## License
 

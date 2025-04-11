@@ -10,6 +10,8 @@ from typing import Dict, Any, Optional
 from .socket_client import LuaSocketClient
 from .command_generator import CommandGenerator
 from .result_handler import ResultHandler, ErrorCategory
+from .mcp.protocol import MCPProcessor, MCPMessage, MCPMessageType
+from .llm.handler import LLMHandler
 
 logger = logging.getLogger(__name__)
 
@@ -37,11 +39,19 @@ class McpServer:
         self.command_generator = CommandGenerator()
         self.running = False
         self.server = None
+        self.processor = MCPProcessor()
+        self.llm_handler = LLMHandler(self.lua_client, self.command_generator)
         
     async def start(self):
         """Start the MCP server and connect to the Lua gadget."""
         try:
+            # Connect to Lua Gadget
             await self.lua_client.connect()
+            
+            # Register LLM handlers with the MCP processor
+            self.llm_handler.register_handlers(self.processor)
+            
+            # Start server
             self.server = await asyncio.start_server(
                 self.handle_client, self.host, self.port
             )
@@ -106,41 +116,46 @@ class McpServer:
             except:
                 pass  # Ignore errors during connection cleanup
             logger.info(f"Connection closed for {addr}")
-            
+    
     async def process_message(self, message: str) -> Dict[str, Any]:
         """
-        Process an incoming message from an LLM.
+        Process a message from a client.
         
         Args:
-            message: JSON string containing the LLM request
+            message: JSON message string from client
             
         Returns:
-            Response dictionary to send back to the LLM
+            Response dictionary
         """
         try:
-            # Parse incoming message
-            request = json.loads(message)
-            command_id = request.get("id", None)
-            
-            # Generate Lua command
-            lua_command = self.command_generator.generate_command(request)
-            
-            # Send to Lua gadget
-            lua_response_str = await self.lua_client.send_command(lua_command)
-            
-            # Parse and process the response
-            lua_response = ResultHandler.parse_response(lua_response_str)
-            processed_response = ResultHandler.process_lua_response(lua_response, command_id)
-            
-            return processed_response
-            
-        except json.JSONDecodeError:
-            logger.error(f"Invalid JSON in request: {message}")
-            return ResultHandler.format_error_response(
-                message="Invalid JSON in request",
-                category=ErrorCategory.SYNTAX,
-                command_id=None
-            )
+            # First try to parse the message as JSON
+            try:
+                request_data = json.loads(message)
+                command_id = request_data.get("id", "unknown")
+            except json.JSONDecodeError:
+                return ResultHandler.format_error_response(
+                    message="Invalid JSON in request",
+                    category=ErrorCategory.SYNTAX,
+                    command_id=None
+                )
+                
+            # Process using MCP processor
+            mcp_message = self.processor.process_message(message)
+            if mcp_message:
+                # Return JSON serializable dict from MCP message
+                return mcp_message.to_dict()
+            else:
+                # Legacy processing for backward compatibility
+                # Generate Lua command from request
+                lua_command = self.command_generator.generate_command(request_data)
+                
+                # Send to Lua Gadget
+                lua_response = await self.lua_client.send_command(lua_command)
+                
+                # Parse and process response
+                parsed_response = ResultHandler.parse_response(lua_response)
+                return ResultHandler.process_lua_response(parsed_response, command_id)
+                
         except Exception as e:
             logger.error(f"Error processing message: {e}")
             return ResultHandler.format_error_response(

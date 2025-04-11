@@ -97,10 +97,10 @@
   - [x] Parse JSON responses from Lua gadget
   - [x] Format results according to MCP protocol
   - [x] Handle different result types (success, error, etc.)
-- [ ] Add LLM integration
-  - [ ] Implement MCP protocol handlers
-  - [ ] Create message parsers for LLM requests
-  - [ ] Set up response formatting for LLMs
+- [x] Add LLM integration
+  - [x] Implement MCP protocol handlers
+  - [x] Create message parsers for LLM requests
+  - [x] Set up response formatting for LLMs
 - [ ] Create command templates for common operations
   - [ ] Job management templates
   - [ ] Vector creation templates
@@ -200,3 +200,40 @@
   - [ ] Track changes to designs
   - [ ] Branch and merge support
   - [ ] Collaboration features
+
+## New SDK-Based Enhancements
+- [ ] Implement advanced geometric operations
+  - [ ] Matrix transformations (using RotationMatrix2D, ScalingMatrix2D, etc.)
+  - [ ] Complex path creation with ContourCarriage
+  - [ ] Box2D operations for bounds management
+  - [ ] Polar coordinate functions
+- [ ] Add specialized job management
+  - [ ] Support for two-sided job creation (CreateNew2SidedJob)
+  - [ ] Rotary job creation and manipulation (CreateNewRotaryJob)
+  - [ ] Material block configuration and thickness management
+- [ ] Implement comprehensive toolpath strategy handlers
+  - [ ] Profile toolpaths with custom parameters
+  - [ ] Pocket toolpaths with various strategies
+  - [ ] V-carving with advanced options
+  - [ ] Fluting toolpaths
+  - [ ] Prism carving toolpaths
+  - [ ] 3D roughing and finishing toolpaths
+  - [ ] Drilling with custom parameters
+- [ ] Create tool database integration
+  - [ ] Access system tool database
+  - [ ] Create custom tools programmatically
+  - [ ] Save and load tool configurations
+- [ ] Add UI integration for Vectric
+  - [ ] Custom HTML dialogs for user interaction
+  - [ ] Progress bars for long-running operations
+  - [ ] File selection dialogs
+  - [ ] Custom markers and on-screen guides
+- [ ] Integrate system information
+  - [ ] Application version detection
+  - [ ] Aspire vs. V-Carve Pro detection
+  - [ ] Access to system file locations
+  - [ ] Registry access for persistent settings
+- [ ] Create external toolpath capabilities
+  - [ ] Generate custom toolpaths from scratch
+  - [ ] Import toolpaths from external sources
+  - [ ] Export toolpaths to various formats
