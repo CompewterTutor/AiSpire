@@ -134,6 +134,8 @@
   - [ ] API documentation
   - [ ] Deployment instructions
   - [ ] Configuration guide
+- [ ] Address some bugs temporarily commented out
+  - [ ] mcp server bugs about functions that were failing tests commented out
 
 ## Integration and Testing
 - [x] Create end-to-end tests
