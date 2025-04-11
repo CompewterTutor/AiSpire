@@ -28,7 +28,7 @@ def load_config(config_path: Optional[str] = None) -> Dict[str, Any]:
         "lua_gadget": {
             "host": "127.0.0.1",
             "port": 9876,
-            "auth_token": "change_this_to_a_secure_token",
+            "auth_token": "a8f5f167f44f4964e6c998dee827110c",
             "connection_timeout": 5.0,
             "reconnect_attempts": 3,
             "reconnect_delay": 2.0,
@@ -38,11 +38,24 @@ def load_config(config_path: Optional[str] = None) -> Dict[str, Any]:
             "port": 8765,
             "allowed_origins": ["http://localhost:3000"],
             "auth_required": True,
-            "auth_token": "change_this_to_a_secure_token",
+            "auth_token": "a8f5f167f44f4964e6c998dee827110c",
         },
         "logging": {
             "level": "INFO",
             "file": None,
+        },
+        "metrics": {
+            "enabled": True,
+            "history_size": 1000,
+            "reporting_interval": 60,  # seconds
+            "alert_thresholds": {
+                "request_latency": 1000,  # ms
+                "lua_execution_time": 5000,  # ms
+                "error_rate": 0.05,  # 5%
+                "connection_failures": 5  # count within reporting interval
+            },
+            "expose_prometheus": True,
+            "prometheus_port": 9090
         }
     }
     
@@ -118,6 +131,56 @@ def load_config(config_path: Optional[str] = None) -> Dict[str, Any]:
     if os.environ.get("AISPIRE_LOG_FILE"):
         config["logging"]["file"] = os.environ.get("AISPIRE_LOG_FILE")
     
+    # METRICS
+    if os.environ.get("AISPIRE_METRICS_ENABLED"):
+        config["metrics"]["enabled"] = os.environ.get("AISPIRE_METRICS_ENABLED").lower() == "true"
+    
+    if os.environ.get("AISPIRE_METRICS_HISTORY_SIZE"):
+        try:
+            config["metrics"]["history_size"] = int(os.environ.get("AISPIRE_METRICS_HISTORY_SIZE"))
+        except ValueError:
+            pass
+    
+    if os.environ.get("AISPIRE_METRICS_REPORTING_INTERVAL"):
+        try:
+            config["metrics"]["reporting_interval"] = int(os.environ.get("AISPIRE_METRICS_REPORTING_INTERVAL"))
+        except ValueError:
+            pass
+    
+    if os.environ.get("AISPIRE_METRICS_EXPOSE_PROMETHEUS"):
+        config["metrics"]["expose_prometheus"] = os.environ.get("AISPIRE_METRICS_EXPOSE_PROMETHEUS").lower() == "true"
+    
+    if os.environ.get("AISPIRE_METRICS_PROMETHEUS_PORT"):
+        try:
+            config["metrics"]["prometheus_port"] = int(os.environ.get("AISPIRE_METRICS_PROMETHEUS_PORT"))
+        except ValueError:
+            pass
+    
+    # Alert thresholds
+    if os.environ.get("AISPIRE_METRICS_ALERT_LATENCY"):
+        try:
+            config["metrics"]["alert_thresholds"]["request_latency"] = float(os.environ.get("AISPIRE_METRICS_ALERT_LATENCY"))
+        except ValueError:
+            pass
+    
+    if os.environ.get("AISPIRE_METRICS_ALERT_EXECUTION_TIME"):
+        try:
+            config["metrics"]["alert_thresholds"]["lua_execution_time"] = float(os.environ.get("AISPIRE_METRICS_ALERT_EXECUTION_TIME"))
+        except ValueError:
+            pass
+    
+    if os.environ.get("AISPIRE_METRICS_ALERT_ERROR_RATE"):
+        try:
+            config["metrics"]["alert_thresholds"]["error_rate"] = float(os.environ.get("AISPIRE_METRICS_ALERT_ERROR_RATE"))
+        except ValueError:
+            pass
+    
+    if os.environ.get("AISPIRE_METRICS_ALERT_CONNECTION_FAILURES"):
+        try:
+            config["metrics"]["alert_thresholds"]["connection_failures"] = int(os.environ.get("AISPIRE_METRICS_ALERT_CONNECTION_FAILURES"))
+        except ValueError:
+            pass
+    
     return config
 
 
@@ -167,6 +230,19 @@ def create_default_config_file(path: str) -> bool:
             "logging": {
                 "level": "INFO",
                 "file": "aispire_mcp.log",
+            },
+            "metrics": {
+                "enabled": True,
+                "history_size": 1000,
+                "reporting_interval": 60,
+                "alert_thresholds": {
+                    "request_latency": 1000,
+                    "lua_execution_time": 5000,
+                    "error_rate": 0.05,
+                    "connection_failures": 5
+                },
+                "expose_prometheus": True,
+                "prometheus_port": 9090
             }
         }
         

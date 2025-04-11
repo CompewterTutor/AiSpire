@@ -7,14 +7,22 @@ a socket connection to the AiSpire Lua Gadget.
 
 Author: AiSpire Team
 Version: 0.1.0 (Development)
-Date: April 9, 2025
+Date: April 11, 2025
 """
 
 import asyncio
 import json
 import logging
 import os
+import time
 from typing import Dict, Any, Optional, List, Union
+import socket
+from http.server import HTTPServer, BaseHTTPRequestHandler
+import threading
+
+# Local imports
+from .config import load_config
+from .metrics import initialize_metrics, get_metrics
 
 # Configure logging
 logging.basicConfig(
@@ -44,6 +52,19 @@ DEFAULT_CONFIG = {
     "logging": {
         "level": "INFO",
         "file": None,
+    },
+    "metrics": {
+        "enabled": True,
+        "history_size": 1000,
+        "reporting_interval": 60,
+        "alert_thresholds": {
+            "request_latency": 1000,
+            "lua_execution_time": 5000,
+            "error_rate": 0.05,
+            "connection_failures": 5
+        },
+        "expose_prometheus": True,
+        "prometheus_port": 9090
     }
 }
 
@@ -82,10 +103,22 @@ class LuaGadgetClient:
                 )
                 self.connected = True
                 logger.info("Connected to Lua Gadget")
+                
+                # Record successful connection in metrics
+                metrics = get_metrics()
+                if metrics:
+                    metrics.record_connection_attempt(True)
+                
                 return True
             except (ConnectionRefusedError, asyncio.TimeoutError) as e:
                 attempts += 1
                 logger.warning(f"Connection attempt {attempts} failed: {str(e)}")
+                
+                # Record failed connection in metrics
+                metrics = get_metrics()
+                if metrics:
+                    metrics.record_connection_attempt(False)
+                
                 if attempts < self.reconnect_attempts:
                     logger.info(f"Retrying in {self.reconnect_delay} seconds...")
                     await asyncio.sleep(self.reconnect_delay)
@@ -114,8 +147,15 @@ class LuaGadgetClient:
         Returns:
             Dict containing the response from the Lua Gadget
         """
+        start_time = time.time()
+        
         if not self.connected:
             if not await self.connect():
+                # Record error in metrics
+                metrics = get_metrics()
+                if metrics:
+                    metrics.record_error("connection_error")
+                
                 return {
                     "status": "error",
                     "result": {
@@ -136,7 +176,21 @@ class LuaGadgetClient:
             "auth": self.auth_token
         }
         
-        return await self._send_command(command)
+        response = await self._send_command(command)
+        
+        # Record metrics
+        end_time = time.time()
+        latency_ms = (end_time - start_time) * 1000
+        
+        metrics = get_metrics()
+        if metrics:
+            metrics.record_request_latency(latency_ms)
+            if "execution_time" in response:
+                metrics.record_execution_time(response["execution_time"])
+            if response["status"] == "error":
+                metrics.record_error(response["result"].get("type", "unknown_error"))
+        
+        return response
     
     async def execute_function(self, function_name: str, parameters: Dict[str, Any], command_id: str) -> Dict[str, Any]:
         """Execute a specific function on the Lua Gadget.
@@ -149,8 +203,15 @@ class LuaGadgetClient:
         Returns:
             Dict containing the response from the Lua Gadget
         """
+        start_time = time.time()
+        
         if not self.connected:
             if not await self.connect():
+                # Record error in metrics
+                metrics = get_metrics()
+                if metrics:
+                    metrics.record_error("connection_error")
+                
                 return {
                     "status": "error",
                     "result": {
@@ -172,7 +233,21 @@ class LuaGadgetClient:
             "auth": self.auth_token
         }
         
-        return await self._send_command(command)
+        response = await self._send_command(command)
+        
+        # Record metrics
+        end_time = time.time()
+        latency_ms = (end_time - start_time) * 1000
+        
+        metrics = get_metrics()
+        if metrics:
+            metrics.record_request_latency(latency_ms)
+            if "execution_time" in response:
+                metrics.record_execution_time(response["execution_time"])
+            if response["status"] == "error":
+                metrics.record_error(response["result"].get("type", "unknown_error"))
+        
+        return response
     
     async def query_state(self, command_id: str) -> Dict[str, Any]:
         """Query the current state of the Lua Gadget.
@@ -183,8 +258,15 @@ class LuaGadgetClient:
         Returns:
             Dict containing the response from the Lua Gadget
         """
+        start_time = time.time()
+        
         if not self.connected:
             if not await self.connect():
+                # Record error in metrics
+                metrics = get_metrics()
+                if metrics:
+                    metrics.record_error("connection_error")
+                
                 return {
                     "status": "error",
                     "result": {
@@ -203,7 +285,19 @@ class LuaGadgetClient:
             "auth": self.auth_token
         }
         
-        return await self._send_command(command)
+        response = await self._send_command(command)
+        
+        # Record metrics
+        end_time = time.time()
+        latency_ms = (end_time - start_time) * 1000
+        
+        metrics = get_metrics()
+        if metrics:
+            metrics.record_request_latency(latency_ms)
+            if response["status"] == "error":
+                metrics.record_error(response["result"].get("type", "unknown_error"))
+        
+        return response
     
     async def _send_command(self, command: Dict[str, Any]) -> Dict[str, Any]:
         """Send a command to the Lua Gadget and receive the response.
@@ -227,6 +321,12 @@ class LuaGadgetClient:
             if not response_json:
                 # Connection closed
                 self.connected = False
+                
+                # Record error in metrics
+                metrics = get_metrics()
+                if metrics:
+                    metrics.record_error("connection_closed")
+                
                 return {
                     "status": "error",
                     "result": {
@@ -243,6 +343,11 @@ class LuaGadgetClient:
                 response = json.loads(response_json.decode())
                 return response
             except json.JSONDecodeError:
+                # Record error in metrics
+                metrics = get_metrics()
+                if metrics:
+                    metrics.record_error("parsing_error")
+                
                 return {
                     "status": "error",
                     "result": {
@@ -256,6 +361,12 @@ class LuaGadgetClient:
                 
         except Exception as e:
             self.connected = False
+            
+            # Record error in metrics
+            metrics = get_metrics()
+            if metrics:
+                metrics.record_error("communication_error")
+            
             return {
                 "status": "error",
                 "result": {
@@ -285,6 +396,8 @@ class MCPServer:
         self.auth_token = config["auth_token"]
         self.lua_client = lua_client
         self.server = None
+        self.metrics_server = None
+        self.metrics_thread = None
     
     async def start(self) -> None:
         """Start the MCP server."""
@@ -293,6 +406,13 @@ class MCPServer:
         # Connect to Lua Gadget
         if not await self.lua_client.connect():
             logger.warning("MCP Server started without connection to Lua Gadget")
+        
+        # Start Prometheus metrics HTTP server if enabled
+        metrics = get_metrics()
+        metrics_config = load_config()["metrics"]
+        if metrics and metrics_config["expose_prometheus"]:
+            self._start_metrics_server(metrics_config["prometheus_port"])
+            logger.info(f"Prometheus metrics server started on port {metrics_config['prometheus_port']}")
         
         # This is a placeholder for the actual MCP server implementation
         # In a real implementation, this would set up websocket handlers
@@ -312,8 +432,62 @@ class MCPServer:
         if self.server:
             self.server.close()
             await self.server.wait_closed()
+        
         await self.lua_client.disconnect()
+        
+        # Stop metrics server if running
+        if self.metrics_server:
+            logger.info("Stopping Prometheus metrics server")
+            self.metrics_server.shutdown()
+            if self.metrics_thread and self.metrics_thread.is_alive():
+                self.metrics_thread.join(timeout=1.0)
+        
+        # Shutdown metrics system
+        metrics = get_metrics()
+        if metrics:
+            metrics.shutdown()
+        
         logger.info("MCP Server stopped")
+    
+    def _start_metrics_server(self, port: int) -> None:
+        """Start an HTTP server to expose Prometheus metrics.
+        
+        Args:
+            port: Port to run the server on
+        """
+        class MetricsHandler(BaseHTTPRequestHandler):
+            def do_GET(self):
+                metrics = get_metrics()
+                if metrics and self.path == '/metrics':
+                    self.send_response(200)
+                    self.send_header('Content-Type', 'text/plain')
+                    self.end_headers()
+                    self.wfile.write(metrics.export_prometheus().encode())
+                elif self.path == '/health':
+                    self.send_response(200)
+                    self.send_header('Content-Type', 'text/plain')
+                    self.end_headers()
+                    self.wfile.write(b'OK')
+                else:
+                    self.send_response(404)
+                    self.send_header('Content-Type', 'text/plain')
+                    self.end_headers()
+                    self.wfile.write(b'Not Found')
+            
+            def log_message(self, format, *args):
+                # Redirect HTTP server logs to our logger
+                logger.debug(f"Metrics server: {format % args}")
+        
+        def run_metrics_server():
+            server = HTTPServer(('', port), MetricsHandler)
+            self.metrics_server = server
+            try:
+                server.serve_forever()
+            except Exception as e:
+                logger.error(f"Error in metrics server: {str(e)}")
+        
+        self.metrics_thread = threading.Thread(target=run_metrics_server, daemon=True)
+        self.metrics_thread.start()
     
     async def _handle_connection(self, reader: asyncio.StreamReader, writer: asyncio.StreamWriter) -> None:
         """Handle a new client connection.
@@ -327,6 +501,7 @@ class MCPServer:
         
         try:
             while True:
+                start_time = time.time()
                 data = await reader.readline()
                 if not data:
                     break
@@ -347,6 +522,12 @@ class MCPServer:
                             }
                             writer.write(json.dumps(response).encode() + b'\n')
                             await writer.drain()
+                            
+                            # Record authentication error
+                            metrics = get_metrics()
+                            if metrics:
+                                metrics.record_error("authentication_failed")
+                            
                             continue
                     
                     # Process the request based on its type
@@ -355,6 +536,11 @@ class MCPServer:
                             "status": "error",
                             "error": "Missing request type"
                         }
+                        
+                        # Record validation error
+                        metrics = get_metrics()
+                        if metrics:
+                            metrics.record_error("validation_error")
                     elif request["type"] == "execute_lua":
                         # Forward to Lua Gadget
                         if "code" not in request:
@@ -362,6 +548,11 @@ class MCPServer:
                                 "status": "error",
                                 "error": "Missing code parameter"
                             }
+                            
+                            # Record validation error
+                            metrics = get_metrics()
+                            if metrics:
+                                metrics.record_error("validation_error")
                         else:
                             lua_response = await self.lua_client.execute_code(
                                 request["code"], 
@@ -376,10 +567,23 @@ class MCPServer:
                             "status": "error",
                             "error": f"Unknown request type: {request['type']}"
                         }
+                        
+                        # Record unknown request type error
+                        metrics = get_metrics()
+                        if metrics:
+                            metrics.record_error("unknown_request_type")
                     
                     # Send response back to client
                     writer.write(json.dumps(response).encode() + b'\n')
                     await writer.drain()
+                    
+                    # Record request latency
+                    end_time = time.time()
+                    latency_ms = (end_time - start_time) * 1000
+                    
+                    metrics = get_metrics()
+                    if metrics:
+                        metrics.record_request_latency(latency_ms)
                     
                 except json.JSONDecodeError:
                     response = {
@@ -388,9 +592,19 @@ class MCPServer:
                     }
                     writer.write(json.dumps(response).encode() + b'\n')
                     await writer.drain()
+                    
+                    # Record parsing error
+                    metrics = get_metrics()
+                    if metrics:
+                        metrics.record_error("json_parsing_error")
                 
         except Exception as e:
             logger.error(f"Error handling connection: {str(e)}")
+            
+            # Record error
+            metrics = get_metrics()
+            if metrics:
+                metrics.record_error("connection_handler_error")
         finally:
             writer.close()
             await writer.wait_closed()
@@ -399,8 +613,8 @@ class MCPServer:
 
 async def main() -> None:
     """Main function to start the AiSpire MCP Server."""
-    # Load configuration from file or environment (placeholder for now)
-    config = DEFAULT_CONFIG
+    # Load configuration from file or environment
+    config = load_config()
     
     # Set up logging
     log_level = getattr(logging, config["logging"]["level"])
@@ -410,6 +624,10 @@ async def main() -> None:
         file_formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
         file_handler.setFormatter(file_formatter)
         logger.addHandler(file_handler)
+    
+    # Initialize metrics
+    metrics = initialize_metrics(config["metrics"])
+    logger.info(f"Metrics system initialized (enabled: {metrics.enabled})")
     
     # Create Lua Gadget client
     lua_client = LuaGadgetClient(config["lua_gadget"])

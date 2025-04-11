@@ -127,6 +127,17 @@ AiSpire is an MCP Server and plugin for Vectric Aspire/V-Carve (CAD/CAM Software
   - Integrated UI with server module using a clean API
   - Added secondary gadget action to directly access the UI control panel
   - Implemented responsive HTML-based UI using Vectric HTML_Dialog system
+- Performance metrics implementation completed for Python MCP Server:
+  - Added metrics collection functionality with key performance indicators (KPIs)
+  - Implemented configurable metrics history size
+  - Added alerts for exceeding performance thresholds (latency, execution time, error rate)
+  - Created metrics reporting through various formats (JSON, Prometheus)
+  - Implemented periodic metrics reporting capability
+  - Added thread-safe metrics collection with proper locking
+  - Developed comprehensive test suite for metrics functionality
+  - Fixed history size limit implementation via proper property setter
+  - Singleton pattern ensures only one metrics instance across the application
+  - Interface allows enabling/disabling metrics collection at runtime
 
 ## Technical Decisions
 - Two-component architecture: Lua Gadget and Python MCP Server
@@ -176,6 +187,14 @@ AiSpire is an MCP Server and plugin for Vectric Aspire/V-Carve (CAD/CAM Software
   - Event-driven architecture for UI updates
   - Consistent styling matching Vectric's visual design
   - Direct integration with server and logging subsystems
+- Performance metrics design choices:
+  - Time-series data stored in deques with configurable history limits
+  - Metrics collection is thread-safe with proper locking mechanisms
+  - Configurable thresholds trigger alerts when exceeded
+  - Both summary and current period metrics available for different monitoring needs
+  - Support for Prometheus format enables integration with monitoring systems
+  - Singleton pattern for centralized metrics tracking throughout the application
+  - Implemented as a separate module for clean code organization
 
 ## Research Notes
 - Vectric Aspire/V-Carve Lua SDK offers extensive functionality:
@@ -224,11 +243,10 @@ AiSpire is an MCP Server and plugin for Vectric Aspire/V-Carve (CAD/CAM Software
 - Creating realistic mock objects for testing helper functions
 
 ## Next Steps
-1. Implement performance metrics
-2. Create alerts for critical issues
-3. Create documentation for Python component
-4. Test with mock Vectric SDK
-5. Implement Vectric SDK wrapper functions for:
+1. Create alerts for critical issues
+2. Create documentation for Python component
+3. Test with mock Vectric SDK
+4. Implement Vectric SDK wrapper functions for:
    - Job management functions (create, open, save, export)
    - Vector creation and manipulation functions
    - Toolpath creation and calculation functions
@@ -249,3 +267,9 @@ AiSpire is an MCP Server and plugin for Vectric Aspire/V-Carve (CAD/CAM Software
 - Create a comprehensive library of example operations for common CAD/CAM tasks
 - Consider implementing a higher-level DSL for defining complex operations
 - Investigate possible integration with other CAD/CAM formats and standards
+- Consider extending metrics system with:
+  - Resource usage monitoring (CPU, memory)
+  - Long-term metrics storage
+  - Dashboard visualization integration
+  - Custom KPI definitions
+  - Detailed performance profiling
