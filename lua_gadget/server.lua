@@ -18,6 +18,7 @@ local socketServer = nil
 local client = nil
 local isRunning = false
 local lastError = nil
+local uiManager = nil
 
 -- ===================================
 -- SDK Wrapper Functions
@@ -816,10 +817,17 @@ end
 
 -- Process a command from the client
 local function processCommand(commandStr)
+    -- Log the incoming command if UI is available
+    if uiManager then
+        uiManager.log("INFO", "Processing command: " .. commandStr:sub(1, 100) .. (string.len(commandStr) > 100 and "..." or ""))
+        uiManager.startCommandExecution()
+    end
+    
+    -- Try to parse the command
     local command, err = json.decode(commandStr)
     
     if not command then
-        return {
+        local errorResponse = {
             status = "error",
             result = {
                 message = "Invalid JSON command: " .. (err or "unknown error"),
@@ -827,12 +835,20 @@ local function processCommand(commandStr)
                 type = "parsing_error"
             }
         }
+        
+        -- Log the error if UI is available
+        if uiManager then
+            uiManager.log("ERROR", "Command parsing error: " .. (err or "unknown error"))
+            uiManager.endCommandExecution()
+        end
+        
+        return errorResponse
     end
     
     -- Validate the command format and authentication
     local isValid, validationError = validateCommand(command)
     if not isValid then
-        return {
+        local errorResponse = {
             status = "error",
             result = {
                 message = validationError,
@@ -840,6 +856,14 @@ local function processCommand(commandStr)
                 type = "validation_error"
             }
         }
+        
+        -- Log the error if UI is available
+        if uiManager then
+            uiManager.log("ERROR", "Command validation error: " .. validationError)
+            uiManager.endCommandExecution()
+        end
+        
+        return errorResponse
     end
     
     -- Process different command types
@@ -847,10 +871,25 @@ local function processCommand(commandStr)
     local result
     
     if command.command_type == "execute_code" then
+        -- Log execution if UI is available
+        if uiManager then
+            uiManager.log("INFO", "Executing Lua code snippet")
+        end
+        
         result = executeCode(command.payload.code)
     elseif command.command_type == "execute_function" then
+        -- Log execution if UI is available
+        if uiManager then
+            uiManager.log("INFO", "Executing function: " .. (command.payload.function or "unknown"))
+        end
+        
         -- result = executeSdkFunction(command.payload.function, command.payload.parameters)
     elseif command.command_type == "query_state" then
+        -- Log execution if UI is available
+        if uiManager then
+            uiManager.log("INFO", "Querying system state")
+        end
+        
         -- Query the state of various SDK objects
         result = {
             status = "success",
@@ -873,11 +912,34 @@ local function processCommand(commandStr)
                 type = "unknown_command"
             }
         }
+        
+        -- Log the error if UI is available
+        if uiManager then
+            uiManager.log("ERROR", "Unknown command type: " .. command.command_type)
+        end
     end
     
     -- Add execution metadata
     result.command_id = command.id
     result.execution_time = os.clock() - startTime
+    
+    -- Log the result if UI is available
+    if uiManager then
+        local status = result.status or "unknown"
+        local message = result.result and result.result.message or "No message"
+        
+        if status == "success" then
+            uiManager.log("SUCCESS", "Command executed successfully: " .. message)
+        else
+            uiManager.log("ERROR", "Command execution failed: " .. message)
+        end
+        
+        -- Add to command history
+        uiManager.addCommandToHistory(command, result)
+        
+        -- End command execution tracking
+        uiManager.endCommandExecution()
+    end
     
     return result
 end
@@ -888,12 +950,23 @@ local function setupServer()
     
     if not s then
         lastError = "Failed to create server: " .. (err or "unknown error")
+        
+        -- Log the error if UI is available
+        if uiManager then
+            uiManager.log("ERROR", "Failed to create server: " .. (err or "unknown error"))
+        end
+        
         return false
     end
     
     s:settimeout(server.CONFIG.TIMEOUT)
     socketServer = s
     isRunning = true
+    
+    -- Log success if UI is available
+    if uiManager then
+        uiManager.log("INFO", "Server started on " .. server.CONFIG.HOST .. ":" .. server.CONFIG.PORT)
+    end
     
     return true
 end
@@ -906,6 +979,13 @@ local function acceptConnection()
     if c then
         c:settimeout(server.CONFIG.TIMEOUT)
         client = c
+        
+        -- Log connection if UI is available
+        if uiManager then
+            uiManager.log("INFO", "Client connected")
+            uiManager.setConnectionStatus("connected", "Client connected from " .. server.CONFIG.HOST)
+        end
+        
         return true
     end
     
@@ -932,6 +1012,13 @@ function server.stopServer()
     if socketServer then socketServer:close() end
     client = nil
     socketServer = nil
+    
+    -- Log disconnection if UI is available
+    if uiManager then
+        uiManager.log("INFO", "Server stopped")
+        uiManager.setConnectionStatus("disconnected", "Server stopped")
+    end
+    
     return true
 end
 
@@ -947,6 +1034,12 @@ function server.runServer()
         if client then
             client:settimeout(server.CONFIG.TIMEOUT)
             print("Client connected")
+            
+            -- Log connection if UI is available
+            if uiManager then
+                uiManager.log("INFO", "Client connected")
+                uiManager.setConnectionStatus("connected", "Client connected from " .. server.CONFIG.HOST)
+            end
         end
     end
     
@@ -962,6 +1055,18 @@ function server.runServer()
             client:close()
             client = nil
             print("Client disconnected: " .. (err or "unknown error"))
+            
+            -- Log disconnection if UI is available
+            if uiManager then
+                uiManager.log("INFO", "Client disconnected: " .. (err or "unknown error"))
+                uiManager.setConnectionStatus("disconnected", "Client disconnected: " .. (err or "unknown error"))
+                
+                -- Show alert if we were executing a command
+                if uiManager.isExecutingCommand then
+                    uiManager.showAlert("Connection Lost", "Connection to client was lost while executing a command!", "error")
+                    uiManager.endCommandExecution()
+                end
+            end
         end
     end
     
@@ -979,6 +1084,26 @@ end
 -- Function to get the last error
 function server.getLastError()
     return lastError
+end
+
+-- Function to set the UI manager
+function server.setUiManager(ui)
+    uiManager = ui
+    
+    -- Initialize the UI with a reference to this server
+    if uiManager and uiManager.initialize then
+        uiManager.initialize(server)
+    end
+    
+    return true
+end
+
+-- Function to show the UI dialog
+function server.showUI()
+    if uiManager and uiManager.showDialog then
+        return uiManager.showDialog()
+    end
+    return false
 end
 
 -- Expose internal functions for testing

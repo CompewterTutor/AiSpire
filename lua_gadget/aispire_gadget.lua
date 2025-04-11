@@ -19,8 +19,9 @@
     Date: April 11, 2025
 --]]
 
--- Load the server module
+-- Load required modules
 local server = require("server")
+local ui = require("ui_manager")
 
 -- Enhance the sandbox with Vectric SDK
 local function enhanceSandbox()
@@ -43,17 +44,37 @@ local function enhanceSandbox()
     end
 end
 
+-- Function to show the UI panel
+local function showUI()
+    server.showUI()
+end
+
 -- Main function for the gadget
 local function main()
     -- Enhance the sandbox with Vectric SDK
     enhanceSandbox()
     
+    -- Set up the UI manager
+    server.setUiManager(ui)
+    
+    -- Log startup information
+    ui.log("INFO", "AiSpire Gadget starting...")
+    ui.log("INFO", "Version: 0.1.0")
+    
     -- Start the server
     if not server.startServer() then
-        Global.MessageBox("AiSpire Gadget: Failed to start server: " .. (server.getLastError() or "Unknown error"))
+        local errorMsg = server.getLastError() or "Unknown error"
+        ui.log("ERROR", "Failed to start server: " .. errorMsg)
+        Global.MessageBox("AiSpire Gadget: Failed to start server: " .. errorMsg)
+        
+        -- Show UI even if server failed to start
+        showUI()
         return
     end
     
+    ui.log("SUCCESS", "Server started on port " .. server.CONFIG.PORT)
+    
+    -- Show a notification
     Global.MessageBox("AiSpire Gadget: Server started on port " .. server.CONFIG.PORT)
     
     -- Main loop
@@ -61,6 +82,8 @@ local function main()
         server.runServer()
         socket.sleep(0.01)  -- Small delay to prevent hogging CPU
     end
+    
+    ui.log("INFO", "Server stopped. AiSpire Gadget shutting down.")
 end
 
 -- Register with Vectric
@@ -77,12 +100,32 @@ function Gadget_Category()
     return "AiSpire"
 end
 
+-- Main gadget action - just starts the server
 function Gadget_Action()
     main()
+end
+
+-- Secondary action to show just the UI
+function Gadget_SecondaryAction()
+    -- Load modules if not already loaded
+    if not ui then ui = require("ui_manager") end
+    if not server then server = require("server") end
+    
+    -- Set up UI if needed
+    server.setUiManager(ui)
+    
+    -- Show the UI
+    showUI()
+end
+
+-- Menu text for secondary action
+function Secondary_Menu_Text()
+    return "Show AiSpire Control Panel"
 end
 
 -- Export for testing
 return {
     enhanceSandbox = enhanceSandbox,
-    main = main
+    main = main,
+    showUI = showUI
 }
