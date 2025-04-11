@@ -744,7 +744,7 @@ end
 -- Create copies of the vectors so we don't modify originals
 local transformed_vectors = {{}}
 for i, vector in ipairs(vectors) do
-    table.insert(transformed_vectors, CloneVector(vector))
+    table.insert(transformed_vectors, vector:Clone())
 end
 {transform_code}
 -- Add the transformed vectors to the job

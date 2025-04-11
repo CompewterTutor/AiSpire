@@ -202,9 +202,9 @@
   - [ ] Collaboration features
 
 ## New SDK-Based Enhancements
-- [ ] Implement advanced geometric operations
-  - [ ] Matrix transformations (using RotationMatrix2D, ScalingMatrix2D, etc.)
-  - [ ] Complex path creation with ContourCarriage
+- [x] Implement advanced geometric operations
+  - [x] Matrix transformations (using RotationMatrix2D, ScalingMatrix2D, etc.)
+  - [x] Complex path creation with ContourCarriage
   - [ ] Box2D operations for bounds management
   - [ ] Polar coordinate functions
 - [ ] Add specialized job management
