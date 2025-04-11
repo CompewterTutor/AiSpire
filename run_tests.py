@@ -53,6 +53,41 @@ def ensure_init_files():
                 with open(init_file, 'w') as f:
                     f.write('"""Package initialization file."""\n')
 
+def ensure_test_requirements():
+    """Create test_requirements.txt file if it doesn't exist."""
+    project_root = os.path.dirname(os.path.abspath(__file__))
+    test_req_file = os.path.join(project_root, "test_requirements.txt")
+    
+    if not os.path.exists(test_req_file):
+        print(f"Creating {test_req_file}")
+        with open(test_req_file, 'w') as f:
+            f.write('''# AiSpire Test Dependencies
+# Version 0.1.0 (Development)
+
+# Include all base requirements
+-r python_mcp_server/requirements.txt
+
+# Testing frameworks
+pytest>=7.0.0              # Python testing framework
+pytest-asyncio>=0.18.0     # Asyncio support for pytest
+pytest-cov>=3.0.0          # Code coverage plugin for pytest
+pytest-mock>=3.7.0         # Mock support for pytest
+
+# Testing tools
+coverage>=6.3.0            # Code coverage measurement
+mock>=4.0.0                # Mocking library for tests
+
+# Development & debugging
+ipython>=8.0.0             # Enhanced interactive Python shell for debugging
+debugpy>=1.6.0             # Debug adapter for Visual Studio Code
+
+# Mock servers
+aioresponses>=0.7.0        # Mocking aiohttp responses
+responses>=0.20.0          # Mocking requests
+''')
+        print("Created test_requirements.txt file. You may need to install dependencies with:")
+        print("pip install -r test_requirements.txt")
+
 def main():
     # Get the project root directory (where this script is located)
     project_root = os.path.dirname(os.path.abspath(__file__))
@@ -62,6 +97,9 @@ def main():
     
     # Ensure __init__.py files exist to make Python recognize the directories as packages
     ensure_init_files()
+    
+    # Ensure test_requirements.txt exists
+    ensure_test_requirements()
     
     # Show system information
     print(f"Python version: {sys.version}")

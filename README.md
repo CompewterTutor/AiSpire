@@ -1,4 +1,17 @@
+```
+                                          
+     .oo  o .oPYo.         o              
+    .P 8    8                             
+   .P  8 o8 `Yooo. .oPYo. o8 oPYo. .oPYo. 
+  oPooo8  8     `8 8    8  8 8  `' 8oooo8 
+ .P    8  8      8 8    8  8 8     8.     
+.P     8  8 `YooP' 8YooP'  8 8     `Yooo' 
+..:::::..:..:.....:8 ....::....:::::.....:
+:::::::::::::::::::8 :::::::::::::::::::::
+:::::::::::::::::::..:::::::::::::::::::::
+```
 # AiSpire
+
 
 AiSpire is an intelligent interface for Vectric Aspire and V-Carve CAD/CAM software that enables AI-powered design and machining capabilities.
 

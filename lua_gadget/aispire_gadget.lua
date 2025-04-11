@@ -1,10 +1,20 @@
 --[[
-    AiSpire Gadget for Vectric Aspire/V-Carve
+                                                    
+             .oo  o .oPYo.         o                
+            .P 8    8                               
+           .P  8 o8 `Yooo. .oPYo. o8 oPYo. .oPYo.   
+          oPooo8  8     `8 8    8  8 8  `' 8oooo8   
+         .P    8  8      8 8    8  8 8     8.       
+        .P     8  8 `YooP' 8YooP'  8 8     `Yooo'   
+::::::::..:::::..:..:.....:8 ....::....:::::.....:::
+:::::::::::::::::::::::::::8 :::::::::::::::::::::::
+:::::::::::::::::::::::::::..:::::::::::::::::::::::
+    Gadget for Vectric Aspire/V-Carve
     
     This gadget provides a socket server interface to the Vectric software,
     allowing control via the AiSpire Python MCP Server.
     
-    Author: AiSpire Team
+    Author: Michael Morrissey
     Version: 0.1.0 (Development)
     Date: April 9, 2025
 --]]

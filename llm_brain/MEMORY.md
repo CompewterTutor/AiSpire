@@ -162,6 +162,7 @@ AiSpire is an MCP Server and plugin for Vectric Aspire/V-Carve (CAD/CAM Software
 
 ## Resources
 - SDK stubs from vectric_lua_sdk_stubs.lua
+- Detailed Vectric SDK reference available at docs/vectric_sdk/Vectric.lua providing comprehensive API documentation
 - Need to locate official Vectric Aspire/V-Carve SDK documentation
 - Need to review MCP protocol specifications
 

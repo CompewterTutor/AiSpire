@@ -32,7 +32,7 @@ AiSpire consists of two primary components:
 5. Results are sent back through the same channels
 
 ## Lua Gadget Technical Guidelines
-
+- Refer to docs/vectric_sdk/Vectric.lua for SDK reference
 ### Socket Server
 - Use Lua socket library
 - Create a TCP server listening on a configurable port (default: 9876)
@@ -129,18 +129,23 @@ AiSpire consists of two primary components:
 
 ## Supported Operations
 
-Based on the available Vectric SDK, AiSpire will support the following operations:
+Based on the available Vectric SDK (as documented in docs/vectric_sdk/Vectric.lua), AiSpire will support the following operations:
 
 ### Job Management
-- Create, open, save, and export jobs
+- Create, open, save, and export jobs (using CreateNewJob, OpenExistingJob, SaveCurrentJob)
+- Create specialized job types (2-sided jobs, rotary jobs)
 - Modify job properties
-- Manage material settings
+- Manage material settings through MaterialBlock object
 
 ### Vector Operations
-- Create and modify geometric primitives (lines, arcs, circles)
-- Draw complex paths and contours
+- Create and modify geometric primitives (lines, arcs, circles, beziers)
+- Draw complex paths and contours using the Contour and ContourGroup objects
+- Use spans (LineSpan, ArcSpan, BezierSpan) for path construction
 - Import/export vector data
-- Transform vectors (scale, rotate, translate)
+- Transform vectors using Matrix2D operations (scale, rotate, translate, reflect)
+- Manipulate vector objects (CadContour, CadPolyline, CadObjectGroup)
+- Work with 2D and 3D points (Point2D, Point3D) and vectors (Vector2D, Vector3D)
+- Handle bounding boxes and regions (Box2D)
 
 ### Layer Management
 - Create and modify layers
@@ -148,20 +153,39 @@ Based on the available Vectric SDK, AiSpire will support the following operation
 - Move objects between layers
 
 ### Toolpath Operations
-- Create and calculate toolpaths
-- Set toolpath parameters
+- Create and calculate various toolpath types:
+  - Profile toolpaths (ProfileParameterData)
+  - Pocket toolpaths (CreatePocketingToolpath)
+  - Drilling operations (CreateDrillingToolpath)
+  - V-carving toolpaths (CreateVCarvingToolpath)
+  - Fluting toolpaths (CreateFlutingToolpath)
+  - Prism carving toolpaths (CreatePrismCarvingToolpath)
+  - 3D roughing toolpaths (CreateRoughingToolpath)
+  - 3D finishing toolpaths (CreateFinishingToolpath)
+- Set toolpath parameters through specialized parameter data objects
 - Preview and simulate toolpaths
-- Export toolpath files
+- Add lead-in/lead-out and ramping capabilities
+- Export toolpath files using ToolpathSaver
+- Access tool database to manage and select tools
 
-### 3D Modeling
+### 3D Modeling (Aspire-specific)
 - Import 3D models
 - Create basic 3D shapes
 - Modify 3D model properties
+- Work with components and component groups
 
 ### UI Operations
-- Create custom dialogs
-- Display messages to users
+- Create custom dialogs using HTML_Dialog
+- Display messages to users through DisplayMessageBox/MessageBox
+- Create file selection dialogs (FileDialog)
+- Show progress bars for long-running operations (ProgressBar)
 - Get user input and selections
+
+### System Operations
+- Access application information (GetAppVersion, GetBuildVersion)
+- Check application type (IsAspire, IsBetaBuild)
+- Get file locations (GetDataLocation, GetToolDatabaseLocation, etc.)
+- Access and modify registry settings
 
 ## Development Guidelines
 
