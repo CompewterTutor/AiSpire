@@ -71,6 +71,36 @@ AiSpire is currently in the early development phase. The architecture and techni
 
 *Coming soon - Installation and usage instructions will be provided when the first functional version is available.*
 
+### Building and Testing
+
+The project includes a Makefile with various commands for building and testing:
+
+```bash
+# Install development dependencies
+make install-dev-deps
+
+# Run all tests
+make test
+
+# Run specific test suites
+make test-all-lua     # Run all Lua tests
+make test-all-python  # Run all Python tests
+make test-e2e         # Run end-to-end tests
+
+# More granular test options
+make test-lua          # Run Lua tests in tests/lua_tests/
+make test-lua-helpers  # Run Lua helper tests
+make test-python-core  # Run Python core tests
+make test-python-mcp   # Run Python MCP server tests
+make test-python-tests # Run tests in tests/python_tests
+
+# Create Vectric gadget bundle
+make bundle
+
+# Show all available commands
+make help
+```
+
 ## Requirements
 
 - Vectric Aspire or V-Carve software

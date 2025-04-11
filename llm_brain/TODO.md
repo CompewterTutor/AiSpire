@@ -12,6 +12,10 @@
 - [x] Set up testing framework for both Lua and Python components
   - [x] Set up Busted for Lua testing
   - [x] Set up pytest for Python testing
+- [x] Create Makefile with testing and build targets
+  - [x] Add granular test targets for different test types (Lua, Python, E2E)
+  - [x] Implement bundle command for Vectric gadget creation
+  - [x] Add documentation to help target
 
 ## Lua Gadget Development
 - [ ] Research Vectric Aspire/V-Carve SDK documentation
