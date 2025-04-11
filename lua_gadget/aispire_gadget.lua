@@ -9,7 +9,7 @@
 ::::::::..:::::..:..:.....:8 ....::....:::::.....:::
 :::::::::::::::::::::::::::8 :::::::::::::::::::::::
 :::::::::::::::::::::::::::..:::::::::::::::::::::::
-    Gadget for Vectric Aspire/V-Carve
+    MCP Gadget for Vectric Aspire/V-Carve
     
     This gadget provides a socket server interface to the Vectric software,
     allowing control via the AiSpire Python MCP Server.

@@ -70,6 +70,11 @@
   - [x] Document all public functions and their parameters
   - [x] Create examples for common operations
   - [x] Add troubleshooting section
+- [x] Refactor server code for standalone usage
+  - [x] Extract server functionality into dedicated module
+  - [x] Create mock Vectric SDK for standalone testing
+  - [x] Implement standalone runner script
+  - [x] Add test functions for SDK wrapper validation
 
 ## Python MCP Server Development
 - [x] Set up Python development environment

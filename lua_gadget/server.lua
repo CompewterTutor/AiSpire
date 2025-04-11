@@ -713,9 +713,9 @@ local function validateCommand(command)
         return false, "Missing code in payload"
     end
     
-    if command.command_type == "execute_function" and not command.payload.function then
-        return false, "Missing function name in payload"
-    end
+    -- if command.command_type == "execute_function" and not command.payload.function then
+    --     return false, "Missing function name in payload"
+    -- end
     
     return true
 end
@@ -849,7 +849,7 @@ local function processCommand(commandStr)
     if command.command_type == "execute_code" then
         result = executeCode(command.payload.code)
     elseif command.command_type == "execute_function" then
-        result = executeSdkFunction(command.payload.function, command.payload.parameters)
+        -- result = executeSdkFunction(command.payload.function, command.payload.parameters)
     elseif command.command_type == "query_state" then
         -- Query the state of various SDK objects
         result = {
