@@ -81,6 +81,11 @@
   - [x] Create mock Vectric SDK for standalone testing
   - [x] Implement standalone runner script
   - [x] Add test functions for SDK wrapper validation
+- [x] Implement UI for Vectric gadget
+  - [x] Create log viewer panel
+  - [x] Add command history with save/replay
+  - [x] Implement connection status display
+  - [x] Add disconnect button with confirmation
 
 ## Python MCP Server Development
 - [x] Set up Python development environment
@@ -187,8 +192,8 @@
   - [ ] Real-time visualization of operations
   - [ ] Command builder interface
   - [ ] Job management dashboard
-- [ ] Command history and session management
-  - [ ] Save and replay command sequences
+- [x] Command history and session management
+  - [x] Save and replay command sequences
   - [ ] Persistent sessions across restarts
   - [ ] Command versioning
 - [ ] User authentication and permissions
@@ -234,10 +239,10 @@
   - [ ] Access system tool database
   - [ ] Create custom tools programmatically
   - [ ] Save and load tool configurations
-- [ ] Add UI integration for Vectric
-  - [ ] Custom HTML dialogs for user interaction
-  - [ ] Progress bars for long-running operations
-  - [ ] File selection dialogs
+- [x] Add UI integration for Vectric
+  - [x] Custom HTML dialogs for user interaction
+  - [x] Progress bars for long-running operations
+  - [x] File selection dialogs
   - [ ] Custom markers and on-screen guides
 - [ ] Integrate system information
   - [ ] Application version detection

@@ -117,6 +117,16 @@ AiSpire is an MCP Server and plugin for Vectric Aspire/V-Carve (CAD/CAM Software
   - Updated clean target to remove build artifacts
   - Added PyInstaller to development dependencies
   - Implemented comprehensive build documentation in Makefile help
+- UI for Vectric gadget implemented:
+  - Created a dedicated UI manager module (ui_manager.lua)
+  - Implemented log viewer with color-coded entries
+  - Added command history panel with ability to save/load and replay commands
+  - Implemented connection status display with visual indicators
+  - Created confirmation dialog for disconnect operations
+  - Added alert handling for critical issues (e.g., connection loss during command execution)
+  - Integrated UI with server module using a clean API
+  - Added secondary gadget action to directly access the UI control panel
+  - Implemented responsive HTML-based UI using Vectric HTML_Dialog system
 
 ## Technical Decisions
 - Two-component architecture: Lua Gadget and Python MCP Server
@@ -160,6 +170,12 @@ AiSpire is an MCP Server and plugin for Vectric Aspire/V-Carve (CAD/CAM Software
   - Vectric gadget file (.gadget) for Lua component
   - Standalone executable for Python MCP server
   - Combined build process with make build-all command
+- UI implementation using Vectric's HTML_Dialog:
+  - HTML/CSS/JavaScript-based UI for better customization
+  - Tab-based interface for better organization
+  - Event-driven architecture for UI updates
+  - Consistent styling matching Vectric's visual design
+  - Direct integration with server and logging subsystems
 
 ## Research Notes
 - Vectric Aspire/V-Carve Lua SDK offers extensive functionality:
@@ -186,6 +202,13 @@ AiSpire is an MCP Server and plugin for Vectric Aspire/V-Carve (CAD/CAM Software
 - SDK object methods observed:
   - Many objects (like Contour) have their own Clone() method
   - This allows for creating working copies of objects without modifying originals
+- UI capabilities in Vectric SDK:
+  - HTML_Dialog supports full HTML/CSS/JavaScript customization
+  - Dialog event handling for interactive UI components
+  - Field value getting/setting for form elements
+  - File selection dialogs for loading/saving files
+  - MessageBox for simple notifications
+  - ProgressBar for long-running operations
 
 ## Development Environment
 - Need to set up:

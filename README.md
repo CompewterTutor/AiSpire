@@ -46,6 +46,7 @@ AiSpire consists of two primary components:
 - Draw vector shapes and text
 - Optimize vector nesting for material utilization
 - Generate and calculate toolpaths for CNC machining
+- Interactive UI with log viewing and command history
 - Utilize advanced Vectric SDK capabilities:
   - Matrix transformations for precise object manipulation
   - Specialized job types (two-sided, rotary)
@@ -56,11 +57,35 @@ AiSpire consists of two primary components:
 
 ## Project Status
 
-AiSpire is currently in the early development phase. The architecture and technical specifications have been defined, but implementation has not yet begun.
+AiSpire is currently in active development. Key components have been implemented:
+
+- **Lua Socket Server**: Basic socket server with command processing pipeline
+- **Command Processing**: Framework for executing Lua code and SDK functions
+- **UI Manager**: Interactive user interface with log viewer and command history
+- **Helper Functions**: Comprehensive library for common operations
+- **Python MCP Server**: Basic MCP protocol implementation with socket client
+
+## UI Features
+
+The AiSpire Gadget includes a comprehensive user interface:
+
+- **Log Viewer**: Real-time display of system messages with color-coded severity levels
+- **Command History**: View and replay past commands with success/failure indicators
+- **History Management**: Save and load command histories for future reference
+- **Connection Status**: Visual indicators showing connection state and activity
+- **Disconnect Controls**: Safely disconnect with confirmation dialog
+
+The UI is accessible in two ways:
+1. Primary gadget action starts the server with UI
+2. Secondary action ("Show AiSpire Control Panel") opens just the UI without restarting the server
 
 ## Directory Structure
 
 - `lua_gadget/` - Lua plugin for Vectric software
+  - `server.lua` - Socket server implementation
+  - `ui_manager.lua` - UI implementation for the gadget
+  - `json.lua` - JSON parsing implementation
+  - `helpers/` - Helper functions for common operations
 - `python_mcp_server/` - Python implementation of MCP server
 - `tests/` - Test files for both components
 - `docs/` - Project documentation
