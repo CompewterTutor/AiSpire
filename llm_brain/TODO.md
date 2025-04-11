@@ -101,11 +101,11 @@
   - [x] Implement MCP protocol handlers
   - [x] Create message parsers for LLM requests
   - [x] Set up response formatting for LLMs
-- [ ] Create command templates for common operations
-  - [ ] Job management templates
-  - [ ] Vector creation templates
-  - [ ] Toolpath generation templates
-  - [ ] Layer management templates
+- [x] Create command templates for common operations
+  - [x] Job management templates
+  - [x] Vector creation templates
+  - [x] Toolpath generation templates
+  - [x] Layer management templates
 - [x] Implement error handling and recovery
   - [x] Create robust error trapping
   - [x] Implement retry mechanism for failed commands
