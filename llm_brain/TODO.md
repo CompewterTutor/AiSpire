@@ -15,6 +15,8 @@
 - [x] Create Makefile with testing and build targets
   - [x] Add granular test targets for different test types (Lua, Python, E2E)
   - [x] Implement bundle command for Vectric gadget creation
+  - [x] Add build-mcp command for creating standalone MCP server executable
+  - [x] Add build-all command to build both components
   - [x] Add documentation to help target
 
 ## Lua Gadget Development

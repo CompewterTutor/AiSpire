@@ -7,12 +7,15 @@ LUA_GADGET_DIR := $(PROJECT_ROOT)/lua_gadget
 PYTHON_MCP_SERVER_DIR := $(PROJECT_ROOT)/python_mcp_server
 TESTS_DIR := $(PROJECT_ROOT)/tests
 VECTRIC_GADGETS_DIR := $(PROJECT_ROOT)/VectricGadgets
+INSTALL_DIR := $(PROJECT_ROOT)/INSTALL
 
 # Python variables
 PYTHON := python
 PIP := pip
 PYTEST := pytest
 PYTEST_ARGS := -v
+PYINSTALLER := pyinstaller
+PYINSTALLER_ARGS := --onefile --clean
 
 # Lua variables
 LUA := lua
@@ -23,7 +26,7 @@ LUAROCKS := luarocks
 export PYTHONPATH := $(PROJECT_ROOT):$(PYTHONPATH)
 
 # Main targets
-.PHONY: all test clean bundle install-dev-deps
+.PHONY: all test clean bundle build-mcp build-all install-dev-deps
 
 all: test bundle
 
@@ -87,6 +90,17 @@ bundle:
 	@cd $(LUA_GADGET_DIR) && zip -r $(VECTRIC_GADGETS_DIR)/aispire.gadget * -x "*.git*" -x "*.DS_Store" -x "*.gitignore"
 	@echo "Gadget bundle created at $(VECTRIC_GADGETS_DIR)/aispire.gadget"
 
+# Build targets
+build-mcp:
+	@echo "Building MCP server executable..."
+	@mkdir -p $(INSTALL_DIR)
+	cd $(PYTHON_MCP_SERVER_DIR) && $(PYINSTALLER) $(PYINSTALLER_ARGS) -n aispire_mcp_server server.py
+	@cp $(PYTHON_MCP_SERVER_DIR)/dist/aispire_mcp_server* $(INSTALL_DIR)/
+	@echo "MCP server executable built and placed in $(INSTALL_DIR)"
+
+build-all: bundle build-mcp
+	@echo "All components built successfully."
+
 # Run specific test suites
 .PHONY: test-json test-socket-comm test-command-exec test-error-handling
 
@@ -110,6 +124,8 @@ test-error-handling:
 clean:
 	@echo "Cleaning up..."
 	@rm -rf $(VECTRIC_GADGETS_DIR)
+	@rm -rf $(INSTALL_DIR)
+	@rm -rf $(PYTHON_MCP_SERVER_DIR)/build $(PYTHON_MCP_SERVER_DIR)/dist $(PYTHON_MCP_SERVER_DIR)/*.spec
 	@find . -name "__pycache__" -type d -exec rm -rf {} +
 	@find . -name "*.pyc" -delete
 	@find . -name ".pytest_cache" -type d -exec rm -rf {} +
@@ -143,6 +159,8 @@ help:
 	@echo ""
 	@echo "Other targets:"
 	@echo "  bundle          - Create the Vectric gadget bundle"
+	@echo "  build-mcp       - Build MCP server executable"
+	@echo "  build-all       - Build all components"
 	@echo "  install-dev-deps - Install development dependencies"
 	@echo "  clean           - Clean up generated files"
 	@echo "  help            - Show this help message"

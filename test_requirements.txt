@@ -17,6 +17,7 @@ mock>=4.0.0                # Mocking library for tests
 # Development & debugging
 ipython>=8.0.0             # Enhanced interactive Python shell for debugging
 debugpy>=1.6.0             # Debug adapter for Visual Studio Code
+pyinstaller>=5.8.0         # For building standalone executables
 
 # Mock servers
 aioresponses>=0.7.0        # Mocking aiohttp responses
