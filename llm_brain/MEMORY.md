@@ -98,6 +98,13 @@ AiSpire is an MCP Server and plugin for Vectric Aspire/V-Carve (CAD/CAM Software
   - Fixed the transform_vectors method in VectorTemplates to use object's Clone() method
   - Previously was trying to use a non-existent CloneVector function
   - Ensured that vector transformations (move, rotate, scale, mirror) preserve original vectors
+- Mock Vectric SDK implemented for testing:
+  - Created comprehensive object model with proper inheritance
+  - Implemented vector object classes (Circle, Contour, Polyline, Text) with Clone() methods
+  - Added matrix transformation support (translation, rotation, scaling, mirror)
+  - Implemented core SDK functions for job, vector, layer, and toolpath management
+  - Created tests to validate mock SDK functionality, especially for vector transformations
+  - Fixed matrix multiplication ordering to match expected behavior of the real SDK
 
 ## Technical Decisions
 - Two-component architecture: Lua Gadget and Python MCP Server
