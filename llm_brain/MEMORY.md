@@ -138,6 +138,25 @@ AiSpire is an MCP Server and plugin for Vectric Aspire/V-Carve (CAD/CAM Software
   - Fixed history size limit implementation via proper property setter
   - Singleton pattern ensures only one metrics instance across the application
   - Interface allows enabling/disabling metrics collection at runtime
+- Official MCP Python SDK implementation created:
+  - Added separate python_official_mcp_server module for the official MCP implementation
+  - Installed official MCP Python SDK (version 1.6.0) with all required dependencies
+  - Created AiSpireMCPServer class using the FastMCP API from the official SDK
+  - Implemented core tools for interacting with Vectric:
+    - execute_code: Tool for running raw Lua code
+    - query_state: Tool for retrieving the current state of Vectric
+    - create_vector: Tool for creating vector objects (circles, rectangles, polylines, text)
+    - create_toolpath: Tool for generating toolpaths (profile, pocket, drilling)
+  - Added VectricJobResource class to expose Vectric data as MCP resources:
+    - Job information resource
+    - Layers resource
+    - Toolpaths resource
+    - Vectors resource
+    - 3D models resource
+  - Created a runner script for starting and configuring the server
+  - Implemented test file with mock client for validation
+  - Created client example demonstrating how to use the server
+  - Added comprehensive documentation with installation, usage, and API details
 
 ## Technical Decisions
 - Two-component architecture: Lua Gadget and Python MCP Server
@@ -195,6 +214,17 @@ AiSpire is an MCP Server and plugin for Vectric Aspire/V-Carve (CAD/CAM Software
   - Support for Prometheus format enables integration with monitoring systems
   - Singleton pattern for centralized metrics tracking throughout the application
   - Implemented as a separate module for clean code organization
+- Official MCP Python SDK implementation:
+  - Separation into dedicated module for clean architecture
+  - Reuse of existing components like LuaSocketClient and metrics system
+  - Use of FastMCP API for standardized server implementation
+  - Full MCP protocol compliance through official SDK
+  - Integration with existing configuration system
+  - Resource-based approach for exposing Vectric data
+  - Tool-based interaction model for LLMs
+  - Clean abstraction of Vectric operations
+  - Comprehensive error handling with proper MCP error responses
+  - Detailed documentation for users and developers
 
 ## Research Notes
 - Vectric Aspire/V-Carve Lua SDK offers extensive functionality:
@@ -228,6 +258,17 @@ AiSpire is an MCP Server and plugin for Vectric Aspire/V-Carve (CAD/CAM Software
   - File selection dialogs for loading/saving files
   - MessageBox for simple notifications
   - ProgressBar for long-running operations
+- MCP Python SDK research:
+  - Official MCP SDK (version 1.6.0) is stable and well-documented
+  - Provides FastMCP API for easy server implementation
+  - Supports tools, resources, and other MCP features
+  - Includes robust error handling and server lifecycle management
+  - Can be easily integrated with existing components
+  - Allows standardized interaction with LLMs through MCP protocol
+  - Resources provide a clean way to expose data to LLMs
+  - Tools offer a structured approach to command execution
+  - Multi-transport support enables flexible deployment
+  - Compatible with major MCP clients like Claude Desktop
 
 ## Development Environment
 - Need to set up:
@@ -241,12 +282,20 @@ AiSpire is an MCP Server and plugin for Vectric Aspire/V-Carve (CAD/CAM Software
 - Need to implement command templates for common operations
 - Ensuring secure execution of arbitrary Lua code in production environment
 - Creating realistic mock objects for testing helper functions
+- Fully integrating the official MCP Python SDK with the existing system
+- Testing comprehensive MCP feature compatibility
+- Validating resource implementation against MCP specification
+- Ensuring proper error propagation between components
+- Supporting client connection management for long-running operations
 
 ## Next Steps
-1. Create alerts for critical issues
-2. Create documentation for Python component
-3. Test with mock Vectric SDK
-4. Implement Vectric SDK wrapper functions for:
+1. Complete the integration of the official MCP Python SDK
+2. Enhance resource exposure for better LLM context
+3. Implement more specialized tools for common Vectric operations
+4. Create alerts for critical issues
+5. Create documentation for Python component
+6. Test with mock Vectric SDK
+7. Implement Vectric SDK wrapper functions for:
    - Job management functions (create, open, save, export)
    - Vector creation and manipulation functions
    - Toolpath creation and calculation functions
@@ -255,8 +304,9 @@ AiSpire is an MCP Server and plugin for Vectric Aspire/V-Carve (CAD/CAM Software
 ## Resources
 - SDK stubs from vectric_lua_sdk_stubs.lua
 - Detailed Vectric SDK reference available at docs/vectric_sdk/Vectric.lua providing comprehensive API documentation
-- Need to locate official Vectric Aspire/V-Carve SDK documentation
-- Need to review MCP protocol specifications
+- MCP protocol specifications from modelcontextprotocol.io
+- Official MCP Python SDK documentation from github.com/modelcontextprotocol/python-sdk
+- List of MCP client applications that could integrate with our server
 
 ## Notes for Future Development
 - Consider implementing a command history system for undoing operations
@@ -273,3 +323,8 @@ AiSpire is an MCP Server and plugin for Vectric Aspire/V-Carve (CAD/CAM Software
   - Dashboard visualization integration
   - Custom KPI definitions
   - Detailed performance profiling
+- Explore advanced MCP features in future iterations:
+  - Prompt templates for standardized interactions
+  - Sampling for advanced agent capabilities
+  - Multi-modal content support
+  - Agent graph architecture
